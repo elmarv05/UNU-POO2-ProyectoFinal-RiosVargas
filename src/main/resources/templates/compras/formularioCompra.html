@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head}"></head>
+<body>
+
+    <header th:replace="~{layout/layout :: navbar}"></header>
+
+    <div class="container mt-4">
+        <h2 class="mb-4"><i class="fa-solid fa-cart-plus"></i> Nueva Compra de Material</h2>
+
+        <form th:action="@{/web/compras/guardar}" th:object="${compra}" method="post">
+            
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">Datos Generales</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Proveedor</label>
+                            <select class="form-select" th:field="*{proveedor}" required>
+                                <option value="">-- Seleccione Proveedor --</option>
+                                <option th:each="p : ${proveedores}" th:value="${p.id}" th:text="${p.nombre}"></option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Observaciones</label>
+                            <input type="text" class="form-control" th:field="*{observaciones}" placeholder="Opcional...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-secondary text-white d-flex justify-content-between">
+                    <span>Detalle de Compra</span>
+                    <span class="fw-bold">Total: S/ <span th:text="${#numbers.formatDecimal(compra.total, 1, 2)}">0.00</span></span>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Material</th>
+                                <th>Cantidad (Kg/Uni)</th>
+                                <th>Precio Unit.</th>
+                                <th>Subtotal</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="det, stat : *{detalles}">
+                                <td th:text="${det.material.nombre}">Botellas</td>
+                                <td th:text="${det.cantidad}">10</td>
+                                <td th:text="${det.precio}">0.50</td>
+                                <td th:text="${det.subtotal}">5.00</td>
+                                <td>
+                                    <a th:href="@{/web/compras/eliminar-item/{index}(index=${stat.index})}" class="text-danger">
+                                        <i class="fa-solid fa-times-circle"></i>
+                                    </a>
+                                    
+                                    <input type="hidden" th:field="*{detalles[__${stat.index}__].material.id}">
+                                    <input type="hidden" th:field="*{detalles[__${stat.index}__].cantidad}">
+                                    <input type="hidden" th:field="*{detalles[__${stat.index}__].precio}">
+                                    <input type="hidden" th:field="*{detalles[__${stat.index}__].subtotal}">
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(compra.detalles)}">
+                                <td colspan="5" class="text-center text-muted">No hay ítems agregados.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5">
+                <a th:href="@{/web/compras}" class="btn btn-secondary me-2">Cancelar</a>
+                <button type="submit" class="btn btn-success btn-lg" th:disabled="${#lists.isEmpty(compra.detalles)}">
+                    <i class="fa-solid fa-save"></i> Finalizar Compra
+                </button>
+            </div>
+        </form>
+
+        <div class="card border-info mb-5">
+            <div class="card-header bg-info text-dark fw-bold">Agregar Material</div>
+            <div class="card-body">
+                <form th:action="@{/web/compras/agregar-item}" method="post">
+                    <div class="row align-items-end">
+                        
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Material (Residuo)</label>
+                            <select class="form-select" name="materialId" id="selectMaterial" onchange="actualizarPrecio()" required>
+                                <option value="">-- Seleccionar --</option>
+                                <option th:each="m : ${materiales}" 
+                                        th:value="${m.id}" 
+                                        th:text="${m.nombre}"
+                                        th:data-precio="${m.precioCompra}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Cantidad</label>
+                            <input type="number" step="0.01" class="form-control" name="cantidad" required>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Precio Compra</label>
+                            <input type="number" step="0.01" class="form-control" name="precio" id="inputPrecio" required>
+                        </div>
+
+                        <div class="col-md-2 mb-3 d-grid">
+                            <button type="submit" class="btn btn-outline-primary">
+                                <i class="fa-solid fa-plus"></i> Agregar
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+    
+    <footer th:replace="~{layout/layout :: footer}"></footer>
+
+    <script>
+        function actualizarPrecio() {
+            var select = document.getElementById("selectMaterial");
+            var precio = select.options[select.selectedIndex].getAttribute("data-precio");
+            document.getElementById("inputPrecio").value = precio;
+        }
+    </script>
+</body>
+</html>

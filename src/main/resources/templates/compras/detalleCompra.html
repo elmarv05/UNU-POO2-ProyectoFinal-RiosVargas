@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head}"></head>
+<body>
+
+    <header th:replace="~{layout/layout :: navbar}"></header>
+
+    <div class="container mt-4">
+        
+        <div class="mb-3">
+            <a th:href="@{/web/compras}" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-arrow-left"></i> Volver al Historial
+            </a>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Nota de Compra: <span th:text="${compra.codigo}" class="text-warning">CP-001</span></h4>
+                <span class="badge bg-light text-dark" th:text="${#temporals.format(compra.fecha, 'dd/MM/yyyy HH:mm')}">Fecha</span>
+            </div>
+            
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <h6 class="text-muted">Proveedor</h6>
+                        <h5 th:text="${compra.proveedor.nombre}">Nombre Proveedor</h5>
+                        <p class="mb-0" th:text="${compra.proveedor.documento}">RUC</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-muted">Atendido por</h6>
+                        <p class="mb-0 fw-bold" th:text="${compra.trabajador.username}">Usuario</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <h6 class="text-muted">Estado</h6>
+                        <span class="badge bg-success">PROCESADO</span>
+                    </div>
+                </div>
+
+                <div class="alert alert-light border" th:if="${compra.observaciones != null && !compra.observaciones.empty}">
+                    <strong>Observaciones:</strong> <span th:text="${compra.observaciones}"></span>
+                </div>
+
+                <h5 class="mt-4 border-bottom pb-2">Detalle de Materiales</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Material</th>
+                                <th class="text-center">Categoría</th>
+                                <th class="text-center">Unidad</th>
+                                <th class="text-end">Cantidad</th>
+                                <th class="text-end">Precio Unit.</th>
+                                <th class="text-end">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="d : ${compra.detalles}">
+                                <td th:text="${d.material.nombre}">Cartón</td>
+                                <td class="text-center" th:text="${d.material.categoria.nombre}">Papel</td>
+                                <td class="text-center" th:text="${d.material.unidad}">KG</td>
+                                <td class="text-end" th:text="${d.cantidad}">100.0</td>
+                                <td class="text-end" th:text="'S/ ' + ${d.precio}">0.50</td>
+                                <td class="text-end fw-bold" th:text="'S/ ' + ${d.subtotal}">50.00</td>
+                            </tr>
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr>
+                                <td colspan="5" class="text-end fw-bold fs-5">TOTAL PAGADO:</td>
+                                <td class="text-end fw-bold fs-5 text-success" th:text="'S/ ' + ${#numbers.formatDecimal(compra.total, 1, 2)}">S/ 150.00</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{layout/layout :: footer}"></footer>
+</body>
+</html>
