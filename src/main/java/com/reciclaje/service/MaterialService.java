@@ -1,0 +1,43 @@
+package com.reciclaje.service;
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.reciclaje.model.Material;
+import com.reciclaje.repository.MaterialRepository;
+
+@Service
+public class MaterialService {
+
+    @Autowired
+    private MaterialRepository materialRepository;
+
+    // Método para obtener todo mezclado (por si acaso)
+    public List<Material> listarTodos() {
+        return materialRepository.findAll();
+    }
+    
+    // Método NUEVO: Para obtener listas separadas
+    public List<Material> listarPorTipo(String tipo) {
+        return materialRepository.findByTipo(tipo);
+    }
+
+    public void guardar(Material material) {
+        // Lógica de seguridad: Evitar NullPointerExceptions en precios y stock
+        if (material.getId() == null && material.getStock() == null) {
+            material.setStock(0.0);
+        }
+        if (material.getPrecioCompra() == null) material.setPrecioCompra(0.0);
+        if (material.getPrecioVenta() == null) material.setPrecioVenta(0.0);
+
+        materialRepository.save(material);
+    }
+
+    public Material buscarPorId(Integer id) {
+        return materialRepository.findById(id).orElse(null);
+    }
+
+    public void eliminar(Integer id) {
+        materialRepository.deleteById(id);
+    }
+}

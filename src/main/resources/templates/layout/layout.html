@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sistema Recicladora</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="fa-solid fa-recycle"></i> Recicladora Carlitos
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/web/home}">
+                            <i class="fa-solid fa-house"></i> Inicio
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/web/clientes}">
+                            <i class="fa-solid fa-users"></i> Clientes
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/web/trabajadores}">
+                            <i class="fa-solid fa-user-tie"></i> Personal
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/web/proveedores}">
+                            <i class="fa-solid fa-truck-field"></i> Proveedores
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/web/categorias}">
+                            <i class="fa-solid fa-tags"></i> Categorías
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/web/materiales}">
+                            <i class="fa-solid fa-boxes-stacked"></i> Materiales
+                        </a>
+                    </li>
+                    
+                </ul>
+                    
+                <div class="d-flex align-items-center text-white">
+                    <span class="me-3" th:if="${session.usuarioLogueado != null}">
+                        Hola, <strong th:text="${session.usuarioLogueado.nombre}">Usuario</strong>
+                    </span>
+                    <a th:href="@{/logout}" class="btn btn-danger btn-sm">
+                        <i class="fa-solid fa-right-from-bracket"></i> Salir
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        </div>
+
+    <footer th:fragment="footer" class="bg-light text-center text-lg-start mt-5 border-top">
+        <div class="text-center p-3">
+            © 2025 Sistema de Control y Registro de Reciclaje
+        </div>
+        
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </footer>
+
+</body>
+</html>

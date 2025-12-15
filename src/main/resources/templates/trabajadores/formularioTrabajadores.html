@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head}"></head>
+<body>
+
+    <header th:replace="~{layout/layout :: navbar}"></header>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="fa-solid fa-id-card"></i>
+                            <span th:text="${trabajador.id != null ? 'Editar Trabajador' : 'Nuevo Trabajador'}">Formulario</span>
+                        </h4>
+                    </div>
+                    
+                    <div class="card-body">
+                        <form th:action="@{/web/trabajadores}" th:object="${trabajador}" method="post">
+                            
+                            <input type="hidden" th:field="*{id}">
+
+                            <h5 class="mb-3 text-muted">Datos Personales</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Nombre</label>
+                                    <input type="text" class="form-control" th:field="*{nombre}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Apellidos</label>
+                                    <input type="text" class="form-control" th:field="*{apellidos}" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">DNI</label>
+                                    <input type="text" class="form-control" th:field="*{dni}" required maxlength="8">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Teléfono</label>
+                                    <input type="text" class="form-control" th:field="*{telefono}">
+                                </div>
+                            </div>
+
+                            <hr>
+                            
+                            <h5 class="mb-3 text-muted">Datos de Acceso</h5>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Usuario (Login)</label>
+                                    <input type="text" class="form-control" th:field="*{username}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Contraseña</label>
+                                    <input type="text" class="form-control" th:field="*{password}" required>
+                                </div>
+                            </div>
+
+                            <div class="row align-items-end">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Rol / Cargo</label>
+                                    <select class="form-select" th:field="*{rol}" required>
+                                        <option th:each="r : ${listaRoles}" 
+                                                th:value="${r.id}" 
+                                                th:text="${r.nombre}">
+                                        </option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" th:field="*{activo}" id="checkActivo">
+                                        <label class="form-check-label" for="checkActivo">
+                                            Usuario Activo (Puede iniciar sesión)
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                                <a th:href="@{/web/trabajadores}" class="btn btn-secondary me-2">Cancelar</a>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa-solid fa-save"></i> Guardar Trabajador
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{layout/layout :: footer}"></footer>
+</body>
+</html>

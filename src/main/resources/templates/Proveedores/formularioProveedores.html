@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head}"></head>
+<body>
+
+    <header th:replace="~{layout/layout :: navbar}"></header>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="fa-solid fa-truck"></i>
+                            <span th:text="${proveedor.id != null ? 'Editar Proveedor' : 'Nuevo Proveedor'}">Formulario</span>
+                        </h4>
+                    </div>
+                    
+                    <div class="card-body">
+                        <form th:action="@{/web/proveedores/guardar}" th:object="${proveedor}" method="post">
+                            
+                            <input type="hidden" th:field="*{id}">
+
+                            <div class="mb-3">
+                                <label class="form-label">Nombre / Razón Social</label>
+                                <input type="text" class="form-control" th:field="*{nombre}" required placeholder="Ej: Reciclajes del Sur SAC">
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">RUC / DNI</label>
+                                    <input type="text" class="form-control" th:field="*{documento}" required maxlength="15">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">Teléfono</label>
+                                    <input type="text" class="form-control" th:field="*{telefono}" maxlength="15">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Correo Electrónico</label>
+                                <input type="email" class="form-control" th:field="*{email}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Dirección</label>
+                                <textarea class="form-control" th:field="*{direccion}" rows="2"></textarea>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a th:href="@{/web/proveedores}" class="btn btn-secondary me-2">Cancelar</a>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa-solid fa-save"></i> Guardar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{layout/layout :: footer}"></footer>
+</body>
+</html>

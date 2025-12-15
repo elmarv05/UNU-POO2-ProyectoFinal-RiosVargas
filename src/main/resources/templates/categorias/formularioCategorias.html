@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head}"></head>
+<body>
+
+    <header th:replace="~{layout/layout :: navbar}"></header>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="fa-solid fa-tag"></i>
+                            <span th:text="${categoria.id != null ? 'Editar Categoría' : 'Nueva Categoría'}">Formulario</span>
+                        </h4>
+                    </div>
+                    
+                    <div class="card-body">
+                        <form th:action="@{/web/categorias/guardar}" th:object="${categoria}" method="post">
+                            
+                            <input type="hidden" th:field="*{id}">
+
+                            <div class="mb-3">
+                                <label class="form-label">Nombre de Categoría</label>
+                                <input type="text" class="form-control" th:field="*{nombre}" required placeholder="Ej: Electrónicos">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Descripción</label>
+                                <textarea class="form-control" th:field="*{descripcion}" rows="3" placeholder="Detalles sobre qué incluye..."></textarea>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a th:href="@{/web/categorias}" class="btn btn-secondary me-2">Cancelar</a>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fa-solid fa-save"></i> Guardar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{layout/layout :: footer}"></footer>
+</body>
+</html>

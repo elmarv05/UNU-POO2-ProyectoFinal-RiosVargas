@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head}"></head>
+
+<body>
+
+    <header th:replace="~{layout/layout :: navbar}"></header>
+
+    <div class="container mt-5">
+        <div class="p-5 mb-4 bg-light rounded-3 shadow-sm text-center">
+            <div class="container-fluid py-5">
+                <h1 class="display-5 fw-bold text-primary">¡Bienvenido al Sistema!</h1>
+                <p class="col-md-8 fs-4 mx-auto">
+                    Has iniciado sesión correctamente en el <strong>Sistema de Reciclaje</strong>.
+                    Desde aquí podrás gestionar clientes, personal y futuras operaciones.
+                </p>
+                
+                <hr class="my-4">
+                
+                <div class="d-flex justify-content-center gap-3">
+                    <a th:href="@{/web/clientes}" class="btn btn-primary btn-lg">
+                        <i class="fa-solid fa-users"></i> Gestionar Clientes
+                    </a>
+                    <a th:href="@{/web/trabajadores}" class="btn btn-outline-dark btn-lg">
+                        <i class="fa-solid fa-user-tie"></i> Gestionar Personal
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{layout/layout :: footer}"></footer>
+
+</body>
+</html>
