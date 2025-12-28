@@ -29,7 +29,7 @@ public class Material {
     private Double precioVenta; 
 
     @Column(nullable = false)
-    private Double stock; 
+    private Double stock = 0.0; 
 
     @Column(length = 20)
     private String unidad; 

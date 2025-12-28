@@ -22,7 +22,7 @@ public class ProveedorController {
     public String listar(Model model) {
         model.addAttribute("proveedores", proveedorService.listarTodos());
         return "proveedores/listaProveedores"; 
-    }
+    } 
 
     
     @GetMapping("/nuevo")

@@ -40,10 +40,9 @@ public class Compra {
     private Trabajador trabajador;
 
     
-    @OneToMany(mappedBy = "compra", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "compra", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DetalleCompra> detalles = new ArrayList<>();
-    
-   
+
     public void agregarDetalle(DetalleCompra detalle) {
         detalles.add(detalle);
         detalle.setCompra(this);

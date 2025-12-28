@@ -17,7 +17,6 @@ public class ClienteService {
         return clienteRepository.findAll();
     }
 
-   
     public void guardar(Cliente cliente) {
         clienteRepository.save(cliente);
     }

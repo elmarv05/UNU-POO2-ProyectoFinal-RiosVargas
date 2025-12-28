@@ -28,7 +28,6 @@ public class DetalleCompra {
     @JoinColumn(name = "compra_id", nullable = false)
     @ToString.Exclude 
     private Compra compra;
-
     
     @ManyToOne
     @JoinColumn(name = "material_id", nullable = false)
