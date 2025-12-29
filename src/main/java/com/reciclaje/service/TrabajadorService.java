@@ -29,8 +29,13 @@ public class TrabajadorService {
         return trabajadorRepository.findById(id).orElse(null);
     }
 
+ // En TrabajadorService.java
     public void eliminar(Integer id) {
-        trabajadorRepository.deleteById(id);
+        Trabajador t = buscarPorId(id);
+        if (t != null) {
+            t.setActivo(false); // Borrado lógico
+            trabajadorRepository.save(t);
+        }
     }
     
    

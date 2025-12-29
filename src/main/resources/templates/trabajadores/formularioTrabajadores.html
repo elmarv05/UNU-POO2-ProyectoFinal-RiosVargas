@@ -7,85 +7,79 @@
 
     <div class="container mt-4">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                
-                <div class="card shadow">
+            <div class="col-md-8"> <div class="card shadow">
                     <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">
-                            <i class="fa-solid fa-id-card"></i>
-                            <span th:text="${trabajador.id != null ? 'Editar Trabajador' : 'Nuevo Trabajador'}">Formulario</span>
-                        </h4>
+                        <h4 th:text="${trabajador.id != null ? 'Editar Personal' : 'Nuevo Personal'}">Registro</h4>
                     </div>
-                    
                     <div class="card-body">
-                        <form th:action="@{/web/trabajadores}" th:object="${trabajador}" method="post">
+                        
+                        <form th:action="@{/web/trabajadores/guardar}" th:object="${trabajador}" method="post">
                             
-                            <input type="hidden" th:field="*{id}">
+                            <input type="hidden" th:field="*{id}" />
 
-                            <h5 class="mb-3 text-muted">Datos Personales</h5>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Nombre</label>
-                                    <input type="text" class="form-control" th:field="*{nombre}" required>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Nombres</label>
+                                    <input type="text" class="form-control" th:field="*{nombre}" required placeholder="Ej: Juan">
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Apellidos</label>
-                                    <input type="text" class="form-control" th:field="*{apellidos}" required>
+                                <div class="col-md-6">
+                                    <label class="form-label">Apellidos</label> <input type="text" class="form-control" th:field="*{apellidos}" required placeholder="Ej: Perez">
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">DNI</label>
-                                    <input type="text" class="form-control" th:field="*{dni}" required maxlength="8">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">DNI</label> <input type="text" class="form-control" th:field="*{dni}" maxlength="8" required placeholder="12345678">
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Teléfono</label>
-                                    <input type="text" class="form-control" th:field="*{telefono}">
+                                <div class="col-md-6">
+                                    <label class="form-label">Teléfono</label> <input type="text" class="form-control" th:field="*{telefono}" placeholder="999-999-999">
                                 </div>
                             </div>
 
                             <hr>
-                            
-                            <h5 class="mb-3 text-muted">Datos de Acceso</h5>
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
                                     <label class="form-label">Usuario (Login)</label>
                                     <input type="text" class="form-control" th:field="*{username}" required>
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <label class="form-label">Contraseña</label>
-                                    <input type="text" class="form-control" th:field="*{password}" required>
-                                </div>
-                            </div>
-
-                            <div class="row align-items-end">
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6">
                                     <label class="form-label">Rol / Cargo</label>
                                     <select class="form-select" th:field="*{rol}" required>
-                                        <option th:each="r : ${listaRoles}" 
+                                        <option value="">-- Seleccione Rol --</option>
+                                        <option th:each="r : ${roles}" 
                                                 th:value="${r.id}" 
-                                                th:text="${r.nombre}">
-                                        </option>
+                                                th:text="${r.nombre}">Admin</option>
                                     </select>
-                                </div>
-                                
-                                <div class="col-md-6 mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" th:field="*{activo}" id="checkActivo">
-                                        <label class="form-check-label" for="checkActivo">
-                                            Usuario Activo (Puede iniciar sesión)
-                                        </label>
-                                    </div>
                                 </div>
                             </div>
 
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                            <div class="mb-3">
+                                <label class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" th:field="*{password}" required>
+                                <small class="text-muted" th:if="${trabajador.id != null}">
+                                    (Nota: Si no desea cambiar la clave, vuelva a escribir la actual)
+                                </small>
+                            </div>
+
+                            <div class="mb-3 form-check form-switch" th:if="${trabajador.id != null}">
+                                <input class="form-check-input" type="checkbox" role="switch" id="checkActivo" th:field="*{activo}">
+                                <label class="form-check-label" for="checkActivo">
+                                    <span class="badge bg-success" th:if="${trabajador.activo}">Personal Activo</span>
+                                    <span class="badge bg-secondary" th:unless="${trabajador.activo}">Personal Inactivo</span>
+                                    <small class="text-muted ms-2">(Desmarcar para quitar acceso)</small>
+                                </label>
+                            </div>
+                            
+                            <input type="hidden" th:if="${trabajador.id == null}" name="activo" value="true">
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                                 <a th:href="@{/web/trabajadores}" class="btn btn-secondary me-2">Cancelar</a>
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fa-solid fa-save"></i> Guardar Trabajador
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa-solid fa-save"></i> Guardar Personal
                                 </button>
                             </div>
+
                         </form>
                     </div>
                 </div>

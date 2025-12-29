@@ -1,5 +1,8 @@
 package com.reciclaje.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,4 +31,12 @@ public class Cliente {
 
     @Column(length = 100)
     private String email;
+    
+    @Column(nullable = false)
+    private boolean activo = true; // Por defecto nace activo
+    
+ // Agrega esto en tu clase Cliente
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
+    @ToString.Exclude // ¡IMPORTANTE! Evita bucle infinito al imprimir en consola
+    private List<Venta> historialVenta = new ArrayList<>();
 }

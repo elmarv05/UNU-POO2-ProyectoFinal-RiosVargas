@@ -49,7 +49,7 @@ public class MaterialController {
     }
 
     // EDITAR
-    @GetMapping("/{id}/editar")
+    @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model) {
         Optional<Material> matOpt = Optional.ofNullable(materialService.buscarPorId(id));
         if (matOpt.isPresent()) {
@@ -61,7 +61,7 @@ public class MaterialController {
     }
 
     // ELIMINAR
-    @GetMapping("/{id}/eliminar")
+    @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id) {
         materialService.eliminar(id);
         return "redirect:/web/materiales";

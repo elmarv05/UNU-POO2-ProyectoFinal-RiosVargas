@@ -16,7 +16,11 @@ public class ClienteService {
     public List<Cliente> listarTodos() {
         return clienteRepository.findAll();
     }
-
+    
+    public List<Cliente> listarActivos() {
+        return clienteRepository.findByActivoTrue();
+    }
+    
     public void guardar(Cliente cliente) {
         clienteRepository.save(cliente);
     }
@@ -26,6 +30,12 @@ public class ClienteService {
     }
 
     public void eliminar(Integer id) {
-        clienteRepository.deleteById(id);
+        // En lugar de clienteRepository.deleteById(id);
+        
+        Cliente c = buscarPorId(id);
+        if (c != null) {
+            c.setActivo(false); // "Apagamos" el cliente
+            clienteRepository.save(c); // Guardamos el cambio de estado
+        }
     }
 }

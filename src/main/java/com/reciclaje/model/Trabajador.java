@@ -1,5 +1,8 @@
 package com.reciclaje.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,4 +41,18 @@ public class Trabajador {
     @ManyToOne
     @JoinColumn(name = "rol_id", nullable = false)
     private Rol rol;
+ // 1. Historial de Compras registradas por este trabajador
+    @OneToMany(mappedBy = "trabajador", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Compra> historialCompras = new ArrayList<>();
+
+    // 2. Historial de Ventas realizadas por este trabajador
+    @OneToMany(mappedBy = "trabajador", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Venta> historialVentas = new ArrayList<>();
+
+    // 3. Historial de Transformaciones (Producción) hechas por este trabajador
+    @OneToMany(mappedBy = "trabajador", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<Transformacion> historialTransformaciones = new ArrayList<>();
 }

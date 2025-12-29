@@ -18,7 +18,9 @@
                             <label class="form-label">Proveedor</label>
                             <select class="form-select" th:field="*{proveedor}" required>
                                 <option value="">-- Seleccione Proveedor --</option>
-                                <option th:each="p : ${proveedores}" th:value="${p.id}" th:text="${p.nombre}"></option>
+                                <option th:each="p : ${proveedores}" th:value="${p.id}" th:text="${p.razonSocial}">
+                                </option>
+                            </option>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -98,12 +100,12 @@
 
                         <div class="col-md-3 mb-3">
                             <label class="form-label">Cantidad</label>
-                            <input type="number" step="0.01" class="form-control" name="cantidad" required>
+                            <input type="number" step="1" min="1" class="form-control" name="cantidad" required>
                         </div>
 
                         <div class="col-md-3 mb-3">
                             <label class="form-label">Precio Compra</label>
-                            <input type="number" step="0.01" class="form-control" name="precio" id="inputPrecio" required>
+                            <input type="number" step="0.1" class="form-control" name="precio" id="inputPrecio" required>
                         </div>
 
                         <div class="col-md-2 mb-3 d-grid">

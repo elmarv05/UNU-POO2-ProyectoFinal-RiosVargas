@@ -7,10 +7,10 @@
 
     <div class="container mt-4">
         
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2><i class="fa-solid fa-users"></i> Listado de Clientes</h2>
-            <a th:href="@{/web/clientes/nuevo}" class="btn btn-primary">
-                <i class="fa-solid fa-plus"></i> Nuevo Cliente
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fa-solid fa-users"></i> Lista de Clientes</h2>
+            <a th:href="@{/web/clientes/registrar}" class="btn btn-primary">
+                <i class="fa-solid fa-user-plus"></i> Nuevo Cliente
             </a>
         </div>
 
@@ -20,37 +20,36 @@
                     <thead class="table-dark">
                         <tr>
                             <th>ID</th>
-                            <th>Razón Social / Nombre</th>
-                            <th>RUC / DNI</th>
-                            <th>Teléfono</th>
-                            <th>Email</th>
+                            <th>Razón Social</th>
+                            <th>DNI/RUC</th>
+                            <th>Dirección</th>
+                            <th>Estado</th>
                             <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="cliente : ${clientes}">
-                            <td th:text="${cliente.id}">1</td>
-                            <td th:text="${cliente.razonSocial}">Empresa ABC</td>
-                            <td th:text="${cliente.rucDni}">123456789</td>
-                            <td th:text="${cliente.telefono}">999-999</td>
-                            <td th:text="${cliente.email}">correo@ejemplo.com</td>
+                        <tr th:each="c : ${clientes}" th:classappend="${!c.activo} ? 'table-secondary' : ''">
+                            <td th:text="${c.id}">1</td>
+                            <td th:text="${c.razonSocial}">Cliente Y</td>
+                            <td th:text="${c.rucDni}">102030</td>
+                            <td th:text="${c.direccion}">Av. Siempre Viva</td>
+
                             <td class="text-center">
-                                <a th:href="@{/web/clientes/{id}/editar(id=${cliente.id})}" 
-                                   class="btn btn-warning btn-sm me-1" title="Editar">
+                                <span th:if="${c.activo}" class="badge bg-success">Activo</span>
+                                <span th:unless="${c.activo}" class="badge bg-secondary">Inactivo</span>
+                            </td>
+
+                            <td class="text-center">
+                                <a th:href="@{/web/clientes/editar/{id}(id=${c.id})}" class="btn btn-primary btn-sm">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
-                                <a th:href="@{/web/clientes/{id}/eliminar(id=${cliente.id})}" 
-                                   class="btn btn-danger btn-sm" 
-                                   onclick="return confirm('¿Estás seguro de eliminar este cliente?');" 
-                                   title="Eliminar">
-                                    <i class="fa-solid fa-trash"></i>
+                                <a th:if="${c.activo}"
+                                    th:href="@{/web/clientes/eliminar/{id}(id=${c.id})}" 
+                                    class="btn btn-danger btn-sm" 
+                                    onclick="return confirm('¿Dar de baja a este cliente?')"
+                                    title="Dar de Baja">
+                                    <i class="fa-solid fa-user-slash"></i>
                                 </a>
-                            </td>
-                        </tr>
-                        
-                        <tr th:if="${clientes.empty}">
-                            <td colspan="6" class="text-center text-muted py-4">
-                                No hay clientes registrados aún.
                             </td>
                         </tr>
                     </tbody>

@@ -24,7 +24,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Nombre / Razón Social</label>
-                                <input type="text" class="form-control" th:field="*{nombre}" required placeholder="Ej: Reciclajes del Sur SAC">
+                                <input type="text" class="form-control" th:field="*{razonSocial}" required placeholder="Ej: Reciclajes del Sur SAC">
                             </div>
 
                             <div class="row">
@@ -47,6 +47,17 @@
                                 <label class="form-label">Dirección</label>
                                 <textarea class="form-control" th:field="*{direccion}" rows="2"></textarea>
                             </div>
+
+                                 <div class="mb-3 form-check form-switch" th:if="${proveedor.id != null}">
+                                <input class="form-check-input" type="checkbox" role="switch" id="checkActivo" th:field="*{activo}">
+                                <label class="form-check-label" for="checkActivo">
+                                    <span class="badge bg-success" th:if="${proveedor.activo}">Proveedor Activo</span>
+                                    <span class="badge bg-secondary" th:unless="${proveedor.activo}">Proveedor Inactivo</span>
+                                    <small class="text-muted ms-2">(Desmarcar para dar de baja, Marcar para reactivar)</small>
+                                </label>
+                            </div>
+                            
+                            <input type="hidden" th:if="${proveedor.id == null}" name="activo" value="true">
 
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 <a th:href="@{/web/proveedores}" class="btn btn-secondary me-2">Cancelar</a>

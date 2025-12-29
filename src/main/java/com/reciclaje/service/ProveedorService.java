@@ -3,6 +3,8 @@ package com.reciclaje.service;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.reciclaje.model.Cliente;
 import com.reciclaje.model.Proveedor;
 import com.reciclaje.repository.ProveedorRepository;
 
@@ -25,6 +27,10 @@ public class ProveedorService {
     }
 
     public void eliminar(Integer id) {
-        proveedorRepository.deleteById(id);
+    	Proveedor c = buscarPorId(id);
+        if (c != null) {
+            c.setActivo(false); // "Apagamos" el proveedor
+            proveedorRepository.save(c); // Guardamos el cambio de estado
+        }
     }
 }

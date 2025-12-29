@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head}"></head>
+<body>
+    <header th:replace="~{layout/layout :: navbar}"></header>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fa-solid fa-recycle"></i> Transformación de Materiales</h2>
+            <a th:href="@{/web/transformaciones/nueva}" class="btn btn-warning text-dark">
+                <i class="fa-solid fa-industry"></i> Registrar Producción
+            </a>
+        </div>
+        <div class="card shadow-sm border-warning">
+            <div class="card-body p-0">
+                <table class="table table-striped table-hover mb-0">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Código</th>
+                            <th>Input (Residuo)</th>
+                            <th>Output (Producto)</th>
+                            <th>Responsable</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="t : ${transformaciones}">
+                            <td th:text="${#temporals.format(t.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${t.codigo}" class="fw-bold"></td>
+                            <td>
+                                <span class="text-danger fw-bold"><i class="fa-solid fa-arrow-down"></i> <span th:text="${t.cantidadOrigen}"></span></span>
+                                <br><small th:text="${t.materialOrigen.nombre}"></small>
+                            </td>
+                            <td>
+                                <span class="text-success fw-bold"><i class="fa-solid fa-arrow-up"></i> <span th:text="${t.cantidadDestino}"></span></span>
+                                <br><small th:text="${t.materialDestino.nombre}"></small>
+                            </td>
+                            <td th:text="${t.trabajador.username}"></td>
+                            <td class="text-center">
+                                <a th:href="@{/web/transformaciones/ver/{id}(id=${t.id})}" class="btn btn-info btn-sm text-white"><i class="fa-solid fa-eye"></i></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="~{layout/layout :: footer}"></footer>
+</body>
+</html>

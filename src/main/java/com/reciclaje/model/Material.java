@@ -30,7 +30,12 @@ public class Material {
 
     @Column(nullable = false)
     private Double stock = 0.0; 
-
+    
+    // En Material.java
+    @Column(name = "factor_conversion")
+    private Double factorConversion;     
+    // Ejemplo: Si es 10.0, significa que 1 Unidad de este Producto requiere 10.0 Unidades (KG) de Residuo.
+    
     @Column(length = 20)
     private String unidad; 
 

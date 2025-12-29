@@ -31,7 +31,7 @@
                         <tr th:each="c : ${compras}">
                             <td th:text="${#temporals.format(c.fecha, 'dd/MM/yyyy HH:mm')}">15/12/2025 14:30</td>
                             <td th:text="${c.codigo}" class="fw-bold">CP-12345</td>
-                            <td th:text="${c.proveedor.nombre}">Reciclajes del Sur</td>
+                            <td th:text="${c.proveedor.razonSocial}">Reciclajes del Sur</td>
                             <td th:text="${c.trabajador.username}">admin</td>
                             <td class="text-end fw-bold text-success" th:text="'S/ ' + ${#numbers.formatDecimal(c.total, 1, 2)}">S/ 150.00</td>
                             <td class="text-center">

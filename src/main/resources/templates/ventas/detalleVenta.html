@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout/layout :: head}"></head>
+<body>
+
+    <header th:replace="~{layout/layout :: navbar}"></header>
+
+    <div class="container mt-4">
+        
+        <div class="mb-3">
+            <a th:href="@{/web/ventas}" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-arrow-left"></i> Volver al Historial
+            </a>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Nota de Venta: <span th:text="${venta.codigo}" class="text-warning">VN-001</span></h4>
+                <span class="badge bg-light text-dark" th:text="${#temporals.format(venta.fecha, 'dd/MM/yyyy HH:mm')}">Fecha</span>
+            </div>
+            
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <h6 class="text-muted">Cliente</h6>
+                        <h5 th:text="${venta.cliente.razonSocial}">Nombre Cliente</h5>
+                        <p class="mb-0">RUC/DNI: <span th:text="${venta.cliente.rucDni}"></span></p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-muted">Vendedor</h6>
+                        <p class="mb-0 fw-bold" th:text="${venta.trabajador.username}">Usuario</p>
+                    </div>
+                    <div class="col-md-4 text-md-end">
+                        <h6 class="text-muted">Estado</h6>
+                        <span class="badge bg-success">COMPLETADO</span>
+                    </div>
+                </div>
+
+                <div class="alert alert-light border" th:if="${venta.observaciones != null && !venta.observaciones.empty}">
+                    <strong>Observaciones:</strong> <span th:text="${venta.observaciones}"></span>
+                </div>
+
+                <h5 class="mt-4 border-bottom pb-2">Detalle de Productos</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Producto</th>
+                                <th class="text-center">Categoría</th>
+                                <th class="text-end">Cantidad</th>
+                                <th class="text-end">Precio Unit.</th>
+                                <th class="text-end">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="d : ${venta.detalles}">
+                                <td th:text="${d.material.nombre}">Bloque Plástico</td>
+                                <td class="text-center" th:text="${d.material.categoria.nombre}">Plástico</td>
+                                <td class="text-end" th:text="${d.cantidad}">10.0</td>
+                                <td class="text-end" th:text="'S/ ' + ${d.precio}">2.50</td>
+                                <td class="text-end fw-bold" th:text="'S/ ' + ${d.subtotal}">25.00</td>
+                            </tr>
+                        </tbody>
+                        <tfoot class="table-light">
+                            <tr>
+                                <td colspan="4" class="text-end fw-bold fs-5">TOTAL VENTA:</td>
+                                <td class="text-end fw-bold fs-5 text-success" th:text="'S/ ' + ${#numbers.formatDecimal(venta.total, 1, 2)}">S/ 25.00</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer th:replace="~{layout/layout :: footer}"></footer>
+</body>
+</html>

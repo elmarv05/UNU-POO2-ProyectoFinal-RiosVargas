@@ -7,53 +7,61 @@
 
     <div class="container mt-4">
         <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
+            <div class="col-md-6">
                 
                 <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0">
-                            <i class="fa-solid fa-user-pen"></i> 
-                            <span th:text="${cliente.id != null ? 'Editar Cliente' : 'Nuevo Cliente'}">Formulario</span>
-                        </h4>
+                    <div class="card-header bg-dark text-white">
+                        <h4 th:text="${cliente.id != null ? 'Editar Cliente' : 'Nuevo Cliente'}">Registro</h4>
                     </div>
-                    
                     <div class="card-body">
-                        <form th:action="@{/web/clientes}" th:object="${cliente}" method="post">
+                        
+                        <form th:action="@{/web/clientes/guardar}" th:object="${cliente}" method="post">
                             
-                            <input type="hidden" th:field="*{id}">
+                            <input type="hidden" th:field="*{id}" /> 
 
                             <div class="mb-3">
-                                <label for="razonSocial" class="form-label">Razón Social / Nombre Completo</label>
-                                <input type="text" class="form-control" th:field="*{razonSocial}" required placeholder="Ej: Reciclajes S.A.C.">
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="rucDni" class="form-label">RUC / DNI</label>
-                                    <input type="text" class="form-control" th:field="*{rucDni}" required maxlength="11">
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="telefono" class="form-label">Teléfono</label>
-                                    <input type="text" class="form-control" th:field="*{telefono}" maxlength="15">
-                                </div>
+                                <label class="form-label">Razón Social / Nombre</label>
+                                <input type="text" class="form-control" th:field="*{razonSocial}" required placeholder="Ej: Bodega Pepito">
                             </div>
 
                             <div class="mb-3">
-                                <label for="email" class="form-label">Correo Electrónico</label>
-                                <input type="email" class="form-control" th:field="*{email}" placeholder="nombre@empresa.com">
+                                <label class="form-label">DNI / RUC</label>
+                                <input type="text" class="form-control" th:field="*{rucDni}" required placeholder="Ingrese documento">
                             </div>
 
                             <div class="mb-3">
-                                <label for="direccion" class="form-label">Dirección</label>
-                                <textarea class="form-control" th:field="*{direccion}" rows="2"></textarea>
+                                <label class="form-label">Dirección</label>
+                                <input type="text" class="form-control" th:field="*{direccion}" placeholder="Av. Principal 123">
                             </div>
 
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <div class="mb-3">
+                                <label class="form-label">Teléfono</label>
+                                <input type="text" class="form-control" th:field="*{telefono}" placeholder="999-999-999">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" th:field="*{email}" placeholder="correo@ejemplo.com">
+                            </div>
+
+                            <div class="mb-3 form-check form-switch" th:if="${cliente.id != null}">
+                                <input class="form-check-input" type="checkbox" role="switch" id="checkActivo" th:field="*{activo}">
+                                <label class="form-check-label" for="checkActivo">
+                                    <span class="badge bg-success" th:if="${cliente.activo}">Usuario Activo</span>
+                                    <span class="badge bg-secondary" th:unless="${cliente.activo}">Usuario Inactivo</span>
+                                    <small class="text-muted ms-2">(Desmarcar para dar de baja, Marcar para reactivar)</small>
+                                </label>
+                            </div>
+                            
+                            <input type="hidden" th:if="${cliente.id == null}" name="activo" value="true">
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                                 <a th:href="@{/web/clientes}" class="btn btn-secondary me-2">Cancelar</a>
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fa-solid fa-save"></i> Guardar
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fa-solid fa-save"></i> Guardar Cliente
                                 </button>
                             </div>
+
                         </form>
                     </div>
                 </div>

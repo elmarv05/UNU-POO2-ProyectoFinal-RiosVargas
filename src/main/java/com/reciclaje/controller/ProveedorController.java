@@ -39,7 +39,7 @@ public class ProveedorController {
     }
 
    
-    @GetMapping("/{id}/editar")
+    @GetMapping("/editar/{id}")
     public String formularioEditar(@PathVariable Integer id, Model model) {
         Optional<Proveedor> provOpt = Optional.ofNullable(proveedorService.buscarPorId(id));
         if (provOpt.isPresent()) {
@@ -50,7 +50,7 @@ public class ProveedorController {
     }
 
    
-    @GetMapping("/{id}/eliminar")
+    @GetMapping("/eliminar/{id}")
     public String eliminar(@PathVariable Integer id) {
         proveedorService.eliminar(id);
         return "redirect:/web/proveedores";

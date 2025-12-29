@@ -7,10 +7,10 @@
 
     <div class="container mt-4">
         
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2><i class="fa-solid fa-truck-field"></i> Listado de Proveedores</h2>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fa-solid fa-truck-field"></i> Lista de Proveedores</h2>
             <a th:href="@{/web/proveedores/nuevo}" class="btn btn-primary">
-                <i class="fa-solid fa-plus"></i> Nuevo Proveedor
+                <i class="fa-solid fa-user-plus"></i> Nuevo Proveedor
             </a>
         </div>
 
@@ -20,35 +20,36 @@
                     <thead class="table-dark">
                         <tr>
                             <th>ID</th>
-                            <th>Nombre / Razón Social</th>
-                            <th>RUC / DNI</th>
+                            <th>Razón Social</th>
+                            <th>DNI/RUC</th>
                             <th>Teléfono</th>
-                            <th>Email</th>
+                            <th>Estado</th>
                             <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="p : ${proveedores}">
+                        <tr th:each="p : ${proveedores}" th:classappend="${!p.activo} ? 'table-secondary' : ''">
                             <td th:text="${p.id}">1</td>
-                            <td th:text="${p.nombre}">Recicladora Norte</td>
-                            <td th:text="${p.documento}">20123456789</td>
-                            <td th:text="${p.telefono}">987654321</td>
-                            <td th:text="${p.email}">contacto@norte.com</td>
+                            <td th:text="${p.razonSocial}">Empresa X</td>
+                            <td th:text="${p.documento}">12345678</td>
+                            <td th:text="${p.telefono}">999999</td>
+                            
                             <td class="text-center">
-                                <a th:href="@{/web/proveedores/{id}/editar(id=${p.id})}" 
-                                   class="btn btn-warning btn-sm me-1" title="Editar">
+                                <span th:if="${p.activo}" class="badge bg-success">Activo</span>
+                                <span th:unless="${p.activo}" class="badge bg-secondary">Inactivo</span>
+                            </td>
+
+                            <td class="text-center">
+                                <a th:href="@{/web/proveedores/editar/{id}(id=${p.id})}" class="btn btn-primary btn-sm" title="Editar">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </a>
-                                <a th:href="@{/web/proveedores/{id}/eliminar(id=${p.id})}" 
+                                <a th:if="${p.activo}" 
+                                   th:href="@{/web/proveedores/eliminar/{id}(id=${p.id})}" 
                                    class="btn btn-danger btn-sm" 
-                                   onclick="return confirm('¿Eliminar a este proveedor?');" title="Eliminar">
-                                    <i class="fa-solid fa-trash"></i>
+                                   onclick="return confirm('¿Dar de baja a este proveedor? (No se borrará el historial)')"
+                                   title="Dar de Baja">
+                                    <i class="fa-solid fa-user-slash"></i>
                                 </a>
-                            </td>
-                        </tr>
-                        <tr th:if="${proveedores.empty}">
-                            <td colspan="6" class="text-center text-muted py-4">
-                                No hay proveedores registrados.
                             </td>
                         </tr>
                     </tbody>

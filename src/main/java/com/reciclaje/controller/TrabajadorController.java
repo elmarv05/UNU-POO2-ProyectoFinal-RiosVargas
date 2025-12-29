@@ -1,71 +1,68 @@
 package com.reciclaje.controller;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import com.reciclaje.model.Trabajador;
+import com.reciclaje.repository.RolRepository; // O RolService si lo tienes creado
 import com.reciclaje.service.TrabajadorService;
-import com.reciclaje.repository.RolRepository; 
 
 @Controller
 @RequestMapping("/web/trabajadores")
 public class TrabajadorController {
-    
+
     @Autowired
     private TrabajadorService trabajadorService;
-    
+
     @Autowired
-    private RolRepository rolRepository; 
-    
-    
+    private RolRepository rolRepository; // Necesario para el desplegable de Roles
+
+    // 1. LISTAR
     @GetMapping
-    public String listarTrabajadores(Model model) {
+    public String listar(Model model) {
         model.addAttribute("trabajadores", trabajadorService.listarTodos());
         return "trabajadores/listaTrabajadores";
     }
-    
-    
-    @GetMapping("/nuevo")
-    public String formularioNuevo(Model model) {
-        model.addAttribute("trabajador", new Trabajador());
+
+    // 2. NUEVO
+    @GetMapping("/registrar")
+    public String registrar(Model model) {
+        Trabajador t = new Trabajador();
+        t.setActivo(true); // Por defecto activo
+        model.addAttribute("trabajador", t);
         
-        model.addAttribute("listaRoles", rolRepository.findAll());
+        // ¡IMPORTANTE! Cargar roles
+        model.addAttribute("roles", rolRepository.findAll());
         return "trabajadores/formularioTrabajadores";
     }
-    
-    
-    @PostMapping
-    public String guardarTrabajador(@ModelAttribute Trabajador trabajador) {
+
+    // 3. EDITAR (EL QUE FALTABA)
+    @GetMapping("/editar/{id}")
+    public String editar(@PathVariable Integer id, Model model) {
+        Trabajador t = trabajadorService.buscarPorId(id);
+        if (t == null) {
+            return "redirect:/web/trabajadores";
+        }
+        model.addAttribute("trabajador", t);
+        
+        // ¡IMPORTANTE! Cargar roles también al editar
+        model.addAttribute("roles", rolRepository.findAll());
+        return "trabajadores/formularioTrabajadores";
+    }
+
+    // 4. GUARDAR
+    @PostMapping("/guardar")
+    public String guardar(@ModelAttribute Trabajador trabajador) {
         trabajadorService.guardar(trabajador);
         return "redirect:/web/trabajadores";
     }
-    
-    
-    @GetMapping("/{id}/editar")
-    public String formularioEditar(@PathVariable Integer id, Model model) {
-        Optional<Trabajador> trabajadorOpt = Optional.ofNullable(trabajadorService.buscarPorId(id));
-        
-        if(trabajadorOpt.isPresent()) {
-            model.addAttribute("trabajador", trabajadorOpt.get());
-            
-            model.addAttribute("listaRoles", rolRepository.findAll()); 
-            return "trabajadores/formularioTrabajadores";
-        }
-        return "redirect:/web/trabajadores";
-    }
-    
-   
-    @GetMapping("/{id}/eliminar")
-    public String eliminarTrabajador(@PathVariable Integer id) {
-        trabajadorService.eliminar(id);
+
+    // 5. ELIMINAR (Soft Delete)
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(@PathVariable Integer id) {
+        trabajadorService.eliminar(id); // Asegúrate que tu Service haga setActivo(false)
         return "redirect:/web/trabajadores";
     }
 }

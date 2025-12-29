@@ -1,5 +1,8 @@
 package com.reciclaje.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +18,7 @@ public class Proveedor {
     private Integer id;
 
     @Column(nullable = false, length = 150)
-    private String nombre; 
+    private String razonSocial; 
 
     @Column(unique = true, nullable = false, length = 15)
     private String documento; 
@@ -28,5 +31,13 @@ public class Proveedor {
     
     @Column(length = 200)
     private String direccion;
+    
+    @Column(nullable = false)
+    private boolean activo = true; // Por defecto nace activo
+    
+ // Agrega esto en tu clase Proveedor
+    @OneToMany(mappedBy = "proveedor", fetch = FetchType.LAZY)
+    @ToString.Exclude // ¡IMPORTANTE!
+    private List<Compra> historialCompras=new ArrayList<>();
 
 }

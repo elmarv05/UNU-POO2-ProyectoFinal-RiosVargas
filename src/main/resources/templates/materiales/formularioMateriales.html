@@ -7,24 +7,24 @@
 
     <div class="container mt-4">
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow">
+            <div class="col-md-9"> <div class="card shadow">
                     <div class="card-header bg-primary text-white">
                         <h4 class="mb-0"><i class="fa-solid fa-box-open"></i> Material / Producto</h4>
                     </div>
                     <div class="card-body">
                         <form th:action="@{/web/materiales/guardar}" th:object="${material}" method="post">
                             <input type="hidden" th:field="*{id}">
-                            <!-- Campo oculto para preservar el valor del stock durante la edición -->
                             <input type="hidden" th:field="*{stock}">
 
-                            
-                            <div class="mb-3">
+                            <div class="mb-4">
                                 <label class="form-label fw-bold">Tipo de Registro</label>
-                                <select class="form-select" th:field="*{tipo}" id="selectTipo" onchange="cambiarFormulario()" required>
+                                <select class="form-select border-primary" th:field="*{tipo}" id="selectTipo" onchange="cambiarFormulario()" required>
                                     <option value="RESIDUO">Materia Prima (Residuo)</option>
                                     <option value="PRODUCTO">Producto Terminado</option>
                                 </select>
+                                <div class="form-text text-muted" id="textoAyuda">
+                                    Seleccione si es algo que compra (Residuo) o algo que vende (Producto).
+                                </div>
                             </div>
 
                             <div class="row">
@@ -35,28 +35,43 @@
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">Categoría</label>
                                     <select class="form-select" th:field="*{categoria}" required>
+                                        <option value="">-- Seleccione --</option>
                                         <option th:each="c : ${listaCategorias}" th:value="${c.id}" th:text="${c.nombre}"></option>
                                     </select>
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <hr>
+
+                            <div class="row align-items-end">
+                                
                                 <div class="col-md-4 mb-3" id="divCompra">
-                                    <label class="form-label text-warning-emphasis fw-bold">Precio Compra (x Unidad)</label>
+                                    <label class="form-label text-warning-emphasis fw-bold">Precio Compra (Costo)</label>
                                     <div class="input-group">
                                         <span class="input-group-text">S/</span>
-                                        <input type="number" step="0.01" class="form-control" th:field="*{precioCompra}">
+                                        <input type="number" step="0.01" class="form-control border-warning" th:field="*{precioCompra}">
+                                        <span class="input-group-text">/u</span>
                                     </div>
-                                    <small class="text-muted">Costo al reciclador</small>
+                                    <small class="text-muted">Se paga al reciclador.</small>
                                 </div>
 
                                 <div class="col-md-4 mb-3" id="divVenta" style="display:none;">
-                                    <label class="form-label text-success-emphasis fw-bold">Precio Venta (x Unidad)</label>
+                                    <label class="form-label text-success-emphasis fw-bold">Precio Venta (Ingreso)</label>
                                     <div class="input-group">
                                         <span class="input-group-text">S/</span>
-                                        <input type="number" step="0.01" class="form-control" th:field="*{precioVenta}">
+                                        <input type="number" step="0.01" class="form-control border-success" th:field="*{precioVenta}">
+                                        <span class="input-group-text">/u</span>
                                     </div>
-                                    <small class="text-muted">Venta a industria</small>
+                                    <small class="text-muted">Venta a industria.</small>
+                                </div>
+
+                                <div class="col-md-4 mb-3" id="divFactor" style="display:none;">
+                                    <label class="form-label text-info-emphasis fw-bold">Factor Conversión</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-info text-white fw-bold">x</span>
+                                        <input type="number" step="0.01" class="form-control border-info" th:field="*{factorConversion}" placeholder="10.0">
+                                    </div>
+                                    <small class="text-muted">KG de residuo para hacer 1 producto.</small>
                                 </div>
 
                                 <div class="col-md-4 mb-3">
@@ -69,9 +84,11 @@
                                 </div>
                             </div>
 
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                                 <a th:href="@{/web/materiales}" class="btn btn-secondary me-2">Cancelar</a>
-                                <button type="submit" class="btn btn-success"><i class="fa-solid fa-save"></i> Guardar</button>
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fa-solid fa-save"></i> Guardar Material
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -85,18 +102,26 @@
     <script>
         function cambiarFormulario() {
             let tipo = document.getElementById("selectTipo").value;
+            
+            // Divs a mostrar/ocultar
             let divCompra = document.getElementById("divCompra");
             let divVenta = document.getElementById("divVenta");
+            let divFactor = document.getElementById("divFactor"); // Nuevo div
 
             if (tipo === "RESIDUO") {
+                // MODO RESIDUO
                 divCompra.style.display = "block";
                 divVenta.style.display = "none";
+                divFactor.style.display = "none"; // Ocultamos factor
             } else {
+                // MODO PRODUCTO
                 divCompra.style.display = "none";
                 divVenta.style.display = "block";
+                divFactor.style.display = "block"; // Mostramos factor
             }
         }
-        // Ejecutar al cargar por si estamos editando
+        
+        // Ejecutar al cargar por si estamos editando un registro existente
         window.onload = cambiarFormulario;
     </script>
 </body>
