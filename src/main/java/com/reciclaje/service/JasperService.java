@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import org.springframework.core.io.ClassPathResource;
+import java.io.InputStream;
 
 import com.reciclaje.model.Material;
 
@@ -26,7 +28,10 @@ public class JasperService {
     public byte[] generarReporteInventario(List<Material> listaMateriales, String tipo) throws IOException, JRException {
         
     	
-       	
+    	ClassPathResource imageResource = new ClassPathResource("static/img/logo.png");
+    	InputStream imageStream = imageResource.getInputStream();
+    	
+    	
     	File file = ResourceUtils.getFile("classpath:reports/inventario"+ tipo +".jrxml");
         JasperReport jasperReport = JasperCompileManager.compileReport(file.getAbsolutePath());
         
@@ -35,7 +40,7 @@ public class JasperService {
         
         Map<String, Object> parametros = new HashMap<>();
         parametros.put("autor", "Recicladora Carlitos");
-
+        parametros.put("logo_input_stream", imageStream);
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, dataSource);
         return JasperExportManager.exportReportToPdf(jasperPrint);
     }

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6-5c96b6aa8a39ac1dc6b6bea4b81168e16dd39231  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reporteProductos" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="112ecfd6-b704-4b91-a992-e14cc6bce4b5">
+	<parameter name="logo_input_stream" class="java.io.InputStream"/>
+	<parameter name="autor" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -12,14 +14,32 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch">
+		<band height="94" splitType="Stretch">
 			<staticText>
-				<reportElement x="80" y="0" width="401" height="70" uuid="b89ca3de-c926-4ce2-b069-24d8539e7b86"/>
+				<reportElement x="80" y="0" width="400" height="40" uuid="b89ca3de-c926-4ce2-b069-24d8539e7b86"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="25" isBold="true"/>
 				</textElement>
 				<text><![CDATA[REPORTE DE PRODUCTOS]]></text>
 			</staticText>
+			<image onErrorType="Icon">
+				<reportElement x="0" y="0" width="70" height="70" uuid="47fbe08c-af2e-4836-9fee-e577e7585a14"/>
+				<imageExpression><![CDATA[$P{logo_input_stream}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="80" y="40" width="400" height="30" uuid="edaba537-8f4b-4e10-b199-580f4418892f"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{autor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="0" width="94" height="70" uuid="96e24632-9c88-4f7b-bc20-abb7c1fc113c"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>

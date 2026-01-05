@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.20.6.final using JasperReports Library version 6.20.6-5c96b6aa8a39ac1dc6b6bea4b81168e16dd39231  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="inventarioResiduos" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4458b1a3-cec2-483f-bdea-7ebde9f82e46">
+	<parameter name="logo_input_stream" class="java.io.InputStream"/>
+	<parameter name="autor" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -13,13 +15,31 @@
 	</background>
 	<title>
 		<band height="100" splitType="Stretch">
+			<image onErrorType="Icon">
+				<reportElement x="0" y="0" width="70" height="70" uuid="7ef02c4e-e526-409c-9de6-d30ed1d5b042"/>
+				<imageExpression><![CDATA[$P{logo_input_stream}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="80" y="40" width="400" height="30" uuid="18f577b7-0864-458a-8d86-821ba16043ab"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{autor}]]></textFieldExpression>
+			</textField>
 			<staticText>
-				<reportElement x="77" y="0" width="401" height="70" uuid="c985c57e-dd4f-49bf-ba8d-77d520f05295"/>
+				<reportElement x="80" y="0" width="400" height="40" uuid="5d7771b7-d773-46a3-8372-60d0c44aa40b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="25" isBold="true"/>
 				</textElement>
 				<text><![CDATA[REPORTE DE RESIDUOS]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="480" y="0" width="94" height="70" uuid="2e41d78c-8e60-46ce-beaa-f26246e992fd"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
