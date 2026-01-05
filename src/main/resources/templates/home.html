@@ -6,31 +6,230 @@
 
     <header th:replace="~{layout/layout :: navbar}"></header>
 
-    <div class="container mt-5">
-        <div class="p-5 mb-4 bg-light rounded-3 shadow-sm text-center">
-            <div class="container-fluid py-5">
-                <h1 class="display-5 fw-bold text-primary">¡Bienvenido al Sistema!</h1>
-                <p class="col-md-8 fs-4 mx-auto">
-                    Bienvenido al <strong>Sistema de Reciclaje</strong>.
-                    
-                </p>
-                
-                <hr class="my-4">
-                
-                <div class="d-flex justify-content-center gap-3">
-                    <a th:href="@{/web/clientes}" class="btn btn-primary btn-lg">
-                        <i class="fa-solid fa-users"></i> Gestionar Clientes
-                    </a>
-                    <a th:href="@{/web/trabajadores}" class="btn btn-outline-dark btn-lg">
-                        <i class="fa-solid fa-user-tie"></i> Gestionar Personal
-                    </a>
-                
+    <div class="container mt-4">
+        
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2" style="color: #6f42c1;"><i class="fa-solid fa-chart-line"></i> Dashboard General</h1>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2 border-0 border-start border-4 border-primary">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Clientes</div>
+                                <div class="h3 mb-0 font-weight-bold text-gray-800" th:text="${cantClientes}">0</div>
+                            </div>
+                            <div class="col-auto"><i class="fa-solid fa-users fa-2x text-gray-300 text-muted"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2 border-0 border-start border-4 border-success">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Proveedores</div>
+                                <div class="h3 mb-0 font-weight-bold text-gray-800" th:text="${cantProveedores}">0</div>
+                            </div>
+                            <div class="col-auto"><i class="fa-solid fa-truck-field fa-2x text-muted"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2 border-0 border-start border-4 border-warning">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Productos</div>
+                                <div class="h3 mb-0 font-weight-bold text-gray-800" th:text="${cantProductos}">0</div>
+                            </div>
+                            <div class="col-auto"><i class="fa-solid fa-recycle fa-2x text-muted"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2 border-0 border-start border-4 border-info">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Residuos</div>
+                                <div class="h3 mb-0 font-weight-bold text-gray-800" th:text="${cantResiduos ?: 0}">0</div>
+                            </div>
+                            <div class="col-auto"><i class="fa-solid fa-boxes-stacked fa-2x text-muted"></i></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            
+            
+
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 bg-white d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-danger">Egresos por Compras</h6>
+                        <span class="badge bg-danger">Total: S/ <span th:text="${#numbers.formatDecimal(totalCompras, 1, 2)}"></span></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-area" style="position: relative; height:250px;">
+                            <canvas id="chartCompras"></canvas> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 bg-white d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">Ingresos por Ventas</h6>
+                        <span class="badge bg-success">Total: S/ <span th:text="${#numbers.formatDecimal(totalVentas, 1, 2)}"></span></span>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-area" style="position: relative; height:250px;">
+                            <canvas id="chartVentas"></canvas> 
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-header py-3 bg-warning text-dark">
+                        <h6 class="m-0 font-weight-bold"><i class="fa-solid fa-triangle-exclamation"></i> Alerta: Residuos (Materia Prima)</h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped mb-0 table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Material</th>
+                                        <th>Categoría</th>
+                                        <th class="text-end">Stock</th>
+                                        <th class="text-center">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="prod : ${alertasStock}" th:if="${prod.tipo == 'RESIDUO'}">
+                                        <td th:text="${prod.nombre}">Papel</td>
+                                        <td th:text="${prod.categoria.nombre}">Cat</td>
+                                        <td class="text-end fw-bold text-danger" th:text="${prod.stock} + ' ' + ${prod.unidad}">5 kg</td>
+                                        <td class="text-center"><span class="badge bg-warning text-dark">Bajo</span></td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(alertasStock.?[tipo == 'RESIDUO'])}">
+                                        <td colspan="4" class="text-center text-success py-3">
+                                            <i class="fa-solid fa-check-circle"></i> ¡Todo el inventario está saludable!
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow h-100">
+                    <div class="card-header py-3 bg-danger text-white">
+                        <h6 class="m-0 font-weight-bold"><i class="fa-solid fa-box-open"></i> Alerta: Productos Terminados</h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped mb-0 table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Categoría</th>
+                                        <th class="text-end">Stock</th>
+                                        <th class="text-center">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="prod : ${alertasStock}" th:if="${prod.tipo == 'PRODUCTO'}">
+                                        <td th:text="${prod.nombre}">Papel</td>
+                                        <td th:text="${prod.categoria.nombre}">Cat</td>
+                                        <td class="text-end fw-bold text-danger" th:text="${prod.stock} + ' ' + ${prod.unidad}">5 kg</td>
+                                        <td class="text-center"><span class="badge bg-danger">Crítico</span></td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(alertasStock.?[tipo == 'PRODUCTO'])}">
+                                        <td colspan="4" class="text-center text-success py-3">
+                                            <i class="fa-solid fa-check-circle"></i> Stock estable
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <footer th:replace="~{layout/layout :: footer}"></footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        // --- GRÁFICO VENTAS ---
+        var labelsV = /*[[${graficoLabels}]]*/ [];
+        var dataV = /*[[${graficoData}]]*/ [];
+
+        const ctxV = document.getElementById('chartVentas').getContext('2d');
+        new Chart(ctxV, {
+            type: 'bar',
+            data: {
+                labels: labelsV,
+                datasets: [{
+                    label: 'Ventas (S/)',
+                    data: dataV,
+                    backgroundColor: 'rgba(78, 115, 223, 0.7)', // Azul
+                    borderColor: 'rgba(78, 115, 223, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        // --- GRÁFICO COMPRAS ---
+        var labelsC = /*[[${graficoComprasLabels}]]*/ [];
+        var dataC = /*[[${graficoComprasData}]]*/ [];
+
+        const ctxC = document.getElementById('chartCompras').getContext('2d');
+        new Chart(ctxC, {
+            type: 'bar',
+            data: {
+                labels: labelsC,
+                datasets: [{
+                    label: 'Compras (S/)',
+                    data: dataC,
+                    backgroundColor: 'rgba(231, 74, 59, 0.7)',
+                    borderColor: 'rgba(231, 74, 59, 1)',     // Rojo fuerte línea
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+        /*]]>*/
+    </script>
 
 </body>
 </html>

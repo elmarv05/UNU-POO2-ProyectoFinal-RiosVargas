@@ -1,93 +1,88 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout/layout :: head}"></head>
-<body>
+<form th:action="@{/web/trabajadores/guardar}" th:object="${trabajador}" method="post">
+    
+    <div class="modal-body">
+        
+        <input type="hidden" th:field="*{id}">
 
-    <header th:replace="~{layout/layout :: navbar}"></header>
+        <h6 class="border-bottom pb-2 mb-3" style="color: #6f42c1;">
+            <i class="fa-solid fa-id-card"></i> Datos Personales
+        </h6>
 
-    <div class="container mt-4">
-        <div class="row justify-content-center">
-            <div class="col-md-8"> <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
-                        <h4 th:text="${trabajador.id != null ? 'Editar Personal' : 'Nuevo Personal'}">Registro</h4>
-                    </div>
-                    <div class="card-body">
-                        
-                        <form th:action="@{/web/trabajadores/guardar}" th:object="${trabajador}" method="post">
-                            
-                            <input type="hidden" th:field="*{id}" />
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Nombres</label>
-                                    <input type="text" class="form-control" th:field="*{nombre}" required placeholder="Ej: Juan">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Apellidos</label> <input type="text" class="form-control" th:field="*{apellidos}" required placeholder="Ej: Perez">
-                                </div>
-                            </div>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">DNI</label> <input type="text" class="form-control" th:field="*{dni}" maxlength="8" required placeholder="12345678">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Teléfono</label> <input type="text" class="form-control" th:field="*{telefono}" placeholder="999-999-999">
-                                </div>
-                            </div>
-
-                            <hr>
-
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label class="form-label">Usuario (Login)</label>
-                                    <input type="text" class="form-control" th:field="*{username}" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label">Rol / Cargo</label>
-                                    <select class="form-select" th:field="*{rol}" required>
-                                        <option value="">-- Seleccione Rol --</option>
-                                        <option th:each="r : ${roles}" 
-                                                th:value="${r.id}" 
-                                                th:text="${r.nombre}">Admin</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Contraseña</label>
-                                <input type="password" class="form-control" th:field="*{pass}" required>
-                                <small class="text-muted" th:if="${trabajador.id != null}">
-                                    (Nota: Si no desea cambiar la clave, vuelva a escribir la actual)
-                                </small>
-                            </div>
-
-                            <div class="mb-3 form-check form-switch" th:if="${trabajador.id != null}">
-                                <input class="form-check-input" type="checkbox" role="switch" id="checkActivo" th:field="*{activo}">
-                                <label class="form-check-label" for="checkActivo">
-                                    <span class="badge bg-success" th:if="${trabajador.activo}">Personal Activo</span>
-                                    <span class="badge bg-secondary" th:unless="${trabajador.activo}">Personal Inactivo</span>
-                                    <small class="text-muted ms-2">(Desmarcar para quitar acceso)</small>
-                                </label>
-                            </div>
-                            
-                            <input type="hidden" th:if="${trabajador.id == null}" name="activo" value="true">
-
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                                <a th:href="@{/web/trabajadores}" class="btn btn-secondary me-2">Cancelar</a>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fa-solid fa-save"></i> Guardar Personal
-                                </button>
-                            </div>
-
-                        </form>
-                    </div>
-                </div>
-
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold small text-muted">Nombres</label>
+                <input type="text" class="form-control" th:field="*{nombre}" required placeholder="Ej: Juan">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold small text-muted">Apellidos</label>
+                <input type="text" class="form-control" th:field="*{apellidos}" required placeholder="Ej: Perez">
             </div>
         </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">DNI</label>
+                <input type="text" class="form-control" th:field="*{dni}" required maxlength="8" placeholder="12345678">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label fw-bold small text-muted">Teléfono</label>
+                <input type="text" class="form-control" th:field="*{telefono}" placeholder="999-999-999">
+            </div>
+        </div>
+
+        <h6 class="border-bottom pb-2 mb-3 mt-4" style="color: #6f42c1;">
+            <i class="fa-solid fa-user-lock"></i> Cuenta de Usuario
+        </h6>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold small text-muted">Usuario (Login)</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light"><i class="fa-solid fa-user"></i></span>
+                    <input type="text" class="form-control" th:field="*{username}" required>
+                </div>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold small text-muted">Rol</label>
+                <select class="form-select border-2" th:field="*{rol}" style="border-color: #6f42c1;" required>
+                    <option value="">-- Seleccione --</option>
+                    <option th:each="r : ${roles}" 
+                            th:value="${r.id}" 
+                            th:text="${r.nombre}">
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold small text-muted">Contraseña</label>
+            <div class="input-group">
+                <span class="input-group-text bg-light"><i class="fa-solid fa-key"></i></span>
+                <input type="password" class="form-control" th:field="*{pass}" required>
+            </div>
+            <small class="text-muted" style="font-size: 0.75rem;" th:if="${trabajador.id != null}">
+                (Nota: Si no desea cambiar la clave, vuelva a escribir la actual)
+            </small>
+        </div>
+
+        <div class="mb-3 form-check form-switch p-3 bg-light border rounded" th:if="${trabajador.id != null}">
+            <input class="form-check-input ms-0 me-2" type="checkbox" role="switch" id="checkActivo" th:field="*{activo}">
+            <label class="form-check-label" for="checkActivo">
+                <span class="badge bg-success" th:if="${trabajador.activo}">Personal Activo</span>
+                <span class="badge bg-secondary" th:unless="${trabajador.activo}">Personal Inactivo</span>
+            </label>
+        </div>
+        
+        <input type="hidden" th:if="${trabajador.id == null}" name="activo" value="true">
+
     </div>
 
-    <footer th:replace="~{layout/layout :: footer}"></footer>
-</body>
-</html>
+    <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn text-white" style="background-color: #6f42c1; border-color: #6f42c1;">
+            <i class="fa-solid fa-save"></i> Guardar Personal
+        </button>
+    </div>
+
+</form>

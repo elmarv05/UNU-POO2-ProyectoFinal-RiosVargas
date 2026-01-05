@@ -9,12 +9,12 @@
         
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2><i class="fa-solid fa-truck-field"></i> Lista de Proveedores</h2>
-            <a th:href="@{/web/proveedores/nuevo}" class="btn btn-primary">
+            <button class="btn btn-primary" onclick="abrirModal('/web/proveedores/nuevo', 'Nuevo Proveedor')">
                 <i class="fa-solid fa-user-plus"></i> Nuevo Proveedor
-            </a>
+            </button>
         </div>
 
-<div class="text-end mb-3">
+        <div class="text-end mb-3">
             <a th:href="@{/web/reportes/proveedores}" class="btn btn-danger btn-lg">
                 <i class="fa-solid fa-file-pdf"></i> Descargar lista
             </a>
@@ -46,9 +46,12 @@
                             </td>
 
                             <td class="text-center">
-                                <a th:href="@{/web/proveedores/editar/{id}(id=${p.id})}" class="btn btn-primary btn-sm" title="Editar">
+                                <button class="btn btn-primary btn-sm" 
+                                        th:onclick="'abrirModal(\'/web/proveedores/editar/' + ${p.id} + '\', \'Editar Proveedor\')'"
+                                        title="Editar">
                                     <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
+                                </button>
+                                
                                 <a th:if="${p.activo}" 
                                    th:href="@{/web/proveedores/eliminar/{id}(id=${p.id})}" 
                                    class="btn btn-danger btn-sm" 
@@ -64,6 +67,30 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalGenerico" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white" style="background-color: #6f42c1;">
+                    <h5 class="modal-title" id="tituloModal">Título</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="contenedorFormulario"></div>
+            </div>
+        </div>
+    </div>
+
     <footer th:replace="~{layout/layout :: footer}"></footer>
+
+    <script>
+        function abrirModal(url, titulo) {
+            $('#tituloModal').text(titulo);
+            $.get(url, function(data) {
+                $('#contenedorFormulario').html(data);
+                var myModal = new bootstrap.Modal(document.getElementById('modalGenerico'));
+                myModal.show();
+            });
+        }
+    </script>
+
 </body>
 </html>

@@ -3,12 +3,17 @@
 <head th:replace="~{layout/layout :: head}"></head>
 <body>
     <header th:replace="~{layout/layout :: navbar}"></header>
+    
     <div class="container mt-4">
+        
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2><i class="fa-solid fa-recycle"></i> Transformación de Materiales</h2>
-            <a th:href="@{/web/transformaciones/nueva}" class="btn btn-warning text-dark">
+            <h2 style="color: #6f42c1;"><i class="fa-solid fa-recycle"></i> Transformación de Materiales</h2>
+            
+            <button class="btn text-white" 
+                    style="background-color: #6f42c1; border-color: #6f42c1;"
+                    onclick="abrirModal('/web/transformaciones/nueva', 'Registrar Producción')">
                 <i class="fa-solid fa-industry"></i> Registrar Producción
-            </a>
+            </button>
         </div>
 
         <div class="text-end mb-3">
@@ -17,7 +22,7 @@
             </a>
         </div>
 
-        <div class="card shadow-sm">
+        <div class="card shadow-sm border-0">
             <div class="card-body p-0">
                 <table class="table table-striped table-hover mb-0">
                     <thead style="--bs-table-bg: #6f42c1; --bs-table-color: white; color: white;">
@@ -44,7 +49,10 @@
                             </td>
                             <td th:text="${t.trabajador.username}"></td>
                             <td class="text-center">
-                                <a th:href="@{/web/transformaciones/ver/{id}(id=${t.id})}" class="btn btn-info btn-sm text-white"><i class="fa-solid fa-eye"></i></a>
+                                <button class="btn btn-info btn-sm text-white" 
+                                        th:onclick="'abrirModal(\'/web/transformaciones/ver/' + ${t.id} + '\', \'Detalle de Producción\')'">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
                             </td>
                         </tr>
                     </tbody>
@@ -52,6 +60,31 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="modalGenerico" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg"> 
+            <div class="modal-content">
+                <div class="modal-header text-white" style="background-color: #6f42c1;">
+                    <h5 class="modal-title" id="tituloModal">Título</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="contenedorFormulario"></div>
+            </div>
+        </div>
+    </div>
+
     <footer th:replace="~{layout/layout :: footer}"></footer>
+
+    <script>
+        function abrirModal(url, titulo) {
+            $('#tituloModal').text(titulo);
+            $.get(url, function(data) {
+                $('#contenedorFormulario').html(data);
+                var myModal = new bootstrap.Modal(document.getElementById('modalGenerico'));
+                myModal.show();
+            });
+        }
+    </script>
+
 </body>
 </html>

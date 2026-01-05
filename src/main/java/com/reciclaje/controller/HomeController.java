@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.reciclaje.dto.IComprasPorMes;
 import com.reciclaje.dto.IVentasPorMes;
 import com.reciclaje.model.Trabajador;
 import com.reciclaje.service.*; // Importamos TODOS los servicios
@@ -53,44 +54,50 @@ public class HomeController {
     // --- DASHBOARD ---
     @GetMapping("/web/home")
     public String home(HttpSession session, Model model) {
-        if (session.getAttribute("usuarioLogueado") == null) {
+    	if (session.getAttribute("usuarioLogueado") == null) {
             return "redirect:/login";
         }
 
-        // 1. Totales (Usando los métodos nuevos de los Servicios)
+        // 1. Totales y KPIs (Existente)
         model.addAttribute("cantClientes", clienteService.contarClientes());
         model.addAttribute("cantProveedores", proveedorService.contarProveedores());
         model.addAttribute("cantProductos", materialService.contarProductos());
-        
-        // 2. Finanzas
+        model.addAttribute("cantResiduos", materialService.contarResiduos());
         Double totalVentas = ventaService.obtenerTotalVentas();
         Double totalCompras = compraService.obtenerTotalCompras();
-        
         model.addAttribute("totalVentas", totalVentas != null ? totalVentas : 0.0);
         model.addAttribute("totalCompras", totalCompras != null ? totalCompras : 0.0);
-
-        // 3. Alertas de Stock (Menos de 10)
+        
         model.addAttribute("alertasStock", materialService.buscarStockBajo(10.0));
-        
-        // 4. Gráfico
-        List<IVentasPorMes> datosGrafico = ventaService.obtenerReporteMensual();
-        
-        List<String> labels = new ArrayList<>();
-        List<Double> data = new ArrayList<>();
-        
-        // Procesamos la lista para separarla en arrays para JS
-        if(datosGrafico != null) {
-            for(IVentasPorMes v : datosGrafico) {
-                // Formato Mes/Año
-                labels.add(v.getMes() + "/" + v.getAnio());
-                data.add(v.getTotal());
+
+        // 2. GRÁFICO DE VENTAS (Existente)
+        List<IVentasPorMes> datosVentas = ventaService.obtenerReporteMensual();
+        List<String> labelsVentas = new ArrayList<>();
+        List<Double> dataVentas = new ArrayList<>();
+        if(datosVentas != null) {
+            for(IVentasPorMes v : datosVentas) {
+                labelsVentas.add(v.getMes() + "/" + v.getAnio());
+                dataVentas.add(v.getTotal());
             }
         }
-        
-        model.addAttribute("graficoLabels", labels);
-        model.addAttribute("graficoData", data);
+        model.addAttribute("graficoLabels", labelsVentas);
+        model.addAttribute("graficoData", dataVentas);
 
-        return "home"; 
+        // 3. GRÁFICO DE COMPRAS (¡NUEVO!)
+        List<IComprasPorMes> datosCompras = compraService.obtenerReporteMensual();
+        List<String> labelsCompras = new ArrayList<>();
+        List<Double> dataCompras = new ArrayList<>();
+        
+        if(datosCompras != null) {
+            for(IComprasPorMes c : datosCompras) {
+                labelsCompras.add(c.getMes() + "/" + c.getAnio());
+                dataCompras.add(c.getTotal());
+            }
+        }
+        model.addAttribute("graficoComprasLabels", labelsCompras);
+        model.addAttribute("graficoComprasData", dataCompras);
+
+        return "home";
     }
 
     @GetMapping("/logout")

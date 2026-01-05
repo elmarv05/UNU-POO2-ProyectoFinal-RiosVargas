@@ -9,9 +9,11 @@
         
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2><i class="fa-solid fa-tags"></i> Categorías de Materiales</h2>
-            <a th:href="@{/web/categorias/nueva}" class="btn btn-primary" style="background-color: #6f42c1; border-color: #6f42c1;">
+            <button class="btn text-white" 
+                    style="background-color: #6f42c1; border-color: #6f42c1;"
+                    onclick="abrirModal('/web/categorias/nueva', 'Nueva Categoría')">
                 <i class="fa-solid fa-plus"></i> Nueva Categoría
-            </a>
+            </button>
         </div>
 
 
@@ -34,10 +36,11 @@
                             </td>
                             <td th:text="${cat.descripcion}">Descripción...</td>
                             <td class="text-center">
-                                <a th:href="@{/web/categorias/{id}/editar(id=${cat.id})}" 
-                                   class="btn btn-warning btn-sm me-1">
+                                <button class="btn btn-warning btn-sm me-1"
+                                        th:onclick="'abrirModal(\'/web/categorias/' + ${cat.id} + '/editar\', \'Editar Categoría\')'">
                                     <i class="fa-solid fa-pen-to-square"></i>
-                                </a>
+                                </button>
+                                
                                 <a th:href="@{/web/categorias/{id}/eliminar(id=${cat.id})}" 
                                    class="btn btn-danger btn-sm"
                                    onclick="return confirm('¿Borrar esta categoría?');">
@@ -51,6 +54,29 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalGenerico" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white" style="background-color: #6f42c1;"> <h5 class="modal-title" id="tituloModal">Título</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="contenedorFormulario"></div>
+            </div>
+        </div>
+    </div>
+
     <footer th:replace="~{layout/layout :: footer}"></footer>
+
+    <script>
+        function abrirModal(url, titulo) {
+            $('#tituloModal').text(titulo);
+            $.get(url, function(data) {
+                $('#contenedorFormulario').html(data);
+                var myModal = new bootstrap.Modal(document.getElementById('modalGenerico'));
+                myModal.show();
+            });
+        }
+    </script>
+
 </body>
 </html>

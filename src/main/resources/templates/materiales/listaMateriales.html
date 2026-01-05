@@ -12,10 +12,9 @@
                 <h2><i class="fa-solid fa-boxes-stacked"></i> Gestión de Inventario</h2>
             </div>
             <div class="col-md-6 text-end">
-                <a th:href="@{/web/materiales/nuevo}" class="btn btn-primary">
+                <button class="btn btn-primary" onclick="abrirModal('/web/materiales/nuevo', 'Nuevo Material')">
                     <i class="fa-solid fa-plus"></i> Nuevo Material
-                </a>
-
+                </button>
             </div>
         </div>
 
@@ -31,11 +30,8 @@
         </div>
 
         <div class="card shadow-sm mb-5 border-primary">
-            
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0"><i class="fa-solid fa-recycle"></i> Residuos de materia prima</h5>
-
-            
             </div>
             <div class="card-body p-0">
                 <table class="table table-striped table-hover mb-0 align-middle">
@@ -45,7 +41,8 @@
                             <th>Nombre</th>
                             <th>Categoría</th>
                             <th class="text-end">Stock Actual</th>
-                            <th class="text-end">Precio Compra</th> <th class="text-center">Acciones</th>
+                            <th class="text-end">Precio Compra</th> 
+                            <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,32 +50,28 @@
                             <td th:text="${m.id}">1</td>
                             <td th:text="${m.nombre}" class="fw-bold">Botella PET</td>
                             <td th:text="${m.categoria.nombre}">Plásticos</td>
-                            
                             <td class="text-end">
                                 <span th:text="${m.stock}" class="fw-bold">120.5</span> 
                                 <small class="text-muted" th:text="${m.unidad}">KG</small>
                             </td>
-
                             <td class="text-end text-danger">
                                 - S/ <span th:text="${m.precioCompra}">0.50</span>
                             </td>
-
                             <td class="text-center">
                                 <div class="btn-group" role="group">
-                                    <a th:href="@{/web/materiales/editar/{id}(id=${m.id})}" class="btn btn-warning btn-sm">
+                                    <button class="btn btn-warning btn-sm" 
+                                            th:onclick="'abrirModal(\'/web/materiales/editar/' + ${m.id} + '\', \'Editar Residuo\')'">
                                         <i class="fa-solid fa-pen"></i>
-                                    </a>
+                                    </button>
                                     <a th:href="@{/web/materiales/eliminar/{id}(id=${m.id})}" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar residuo?')">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
                                 </div>
                             </td>
                         </tr>
-
                         <tr th:if="${#lists.isEmpty(residuos)}"> 
                             <td colspan="6" class="text-center">No hay datos</td>
                         </tr>
-
                     </tbody>
                 </table>
             </div>
@@ -102,7 +95,9 @@
                             <th>Nombre</th>
                             <th>Categoría</th>
                             <th class="text-end">Stock Actual</th>
-                            <th class="text-end">Precio Venta</th> <th class="text-center">Factor Conv.</th> <th class="text-center">Acciones</th>
+                            <th class="text-end">Precio Venta</th> 
+                            <th class="text-center">Factor Conv.</th> 
+                            <th class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -110,46 +105,65 @@
                             <td th:text="${m.id}">5</td>
                             <td th:text="${m.nombre}" class="fw-bold">Bloque PET</td>
                             <td th:text="${m.categoria.nombre}">Compactados</td>
-                            
                             <td class="text-end">
                                 <span th:text="${m.stock}" class="fw-bold">50</span> 
                                 <small class="text-muted" th:text="${m.unidad}">UND</small>
                             </td>
-
                             <td class="text-end text-success">
                                 + S/ <span th:text="${m.precioVenta}">15.00</span>
                             </td>
-
                             <td class="text-center">
                                 <span class="badge bg-info text-dark">
                                     x<span th:text="${m.factorConversion}">10.0</span>
                                 </span>
                             </td>
-
                             <td class="text-center">
                                 <div class="btn-group" role="group">
-                                    <a th:href="@{/web/materiales/editar/{id}(id=${m.id})}" class="btn btn-warning btn-sm">
+                                    <button class="btn btn-warning btn-sm" 
+                                            th:onclick="'abrirModal(\'/web/materiales/editar/' + ${m.id} + '\', \'Editar Producto\')'">
                                         <i class="fa-solid fa-pen"></i>
-                                    </a>
+                                    </button>
                                     <a th:href="@{/web/materiales/eliminar/{id}(id=${m.id})}" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar producto?')">
                                         <i class="fa-solid fa-trash"></i>
                                     </a>
                                 </div>
                             </td>
-                            
                         </tr>
                         <tr th:if="${#lists.isEmpty(productos)}"> 
                             <td colspan="7" class="text-center">No hay datos</td>
                         </tr>
-                        
                     </tbody>
                 </table>
             </div>
         </div>
         
-        <br><br> </div>
+        <br><br> 
+    </div>
+
+    <div class="modal fade" id="modalGenerico" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-white" style="background-color: #6f42c1;">
+                    <h5 class="modal-title" id="tituloModal">Título</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="contenedorFormulario"></div>
+            </div>
+        </div>
+    </div>
 
     <footer th:replace="~{layout/layout :: footer}"></footer>
+
+    <script>
+        function abrirModal(url, titulo) {
+            $('#tituloModal').text(titulo);
+            $.get(url, function(data) {
+                $('#contenedorFormulario').html(data);
+                var myModal = new bootstrap.Modal(document.getElementById('modalGenerico'));
+                myModal.show();
+            });
+        }
+    </script>
 
 </body>
 </html>

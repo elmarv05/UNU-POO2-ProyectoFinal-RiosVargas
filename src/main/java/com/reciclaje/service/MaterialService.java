@@ -47,6 +47,10 @@ public class MaterialService {
  public int contarProductos() {
      return materialRepository.countByTipo("PRODUCTO");
  }
+ 
+ public int contarResiduos() {
+     return materialRepository.countByTipo("RESIDUO");
+ }
 
  // 2. Alerta de Stock
  public List<Material> buscarStockBajo(Double min) {

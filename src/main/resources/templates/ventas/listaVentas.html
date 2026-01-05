@@ -9,9 +9,9 @@
         
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2><i class="fa-solid fa-cash-register"></i> Historial de Ventas</h2>
-            <a th:href="@{/web/ventas/nueva}" class="btn btn-success">
+            <button class="btn btn-success" onclick="abrirModal('/web/ventas/nueva', 'Nueva Venta')">
                 <i class="fa-solid fa-cart-plus"></i> Nueva Venta
-            </a>
+            </button>
         </div>
 
         <div class="text-end mb-3">
@@ -29,27 +29,23 @@
                             <th>Código</th>
                             <th>Cliente</th>
                             <th>Vendedor</th>
-                            <th class="text-end">Total Venta</th>
-                            <th class="text-center">Acciones</th>
+                            <th class="text-end">Total</th>
+                            <th class="text-center">Ver</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="v : ${ventas}">
-                            <td th:text="${#temporals.format(v.fecha, 'dd/MM/yyyy HH:mm')}">15/12/2025</td>
-                            <td th:text="${v.codigo}" class="fw-bold">VN-123</td>
-                            <td th:text="${v.cliente.razonSocial}">Cliente XYZ</td>
-                            <td th:text="${v.trabajador.username}">Vendedor</td>
-                            <td class="text-end fw-bold text-success" th:text="'S/ ' + ${#numbers.formatDecimal(v.total, 1, 2)}">S/ 150.00</td>
+                            <td th:text="${#temporals.format(v.fecha, 'dd/MM/yyyy HH:mm')}"></td>
+                            <td th:text="${v.codigo}" class="fw-bold"></td>
+                            <td th:text="${v.cliente.razonSocial}"></td>
+                            <td th:text="${v.trabajador.username}"></td>
+                            <td class="text-end fw-bold text-success" th:text="'S/ ' + ${#numbers.formatDecimal(v.total, 1, 2)}"></td>
                             <td class="text-center">
-                                <a th:href="@{/web/ventas/ver/{id}(id=${v.id})}" class="btn btn-info btn-sm text-white" title="Ver Detalle">
+                                <button class="btn btn-info btn-sm text-white" 
+                                        th:onclick="'abrirModal(\'/web/ventas/ver/' + ${v.id} + '\', \'Detalle de Venta\')'"
+                                        title="Ver Detalle">
                                     <i class="fa-solid fa-eye"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr th:if="${ventas.empty}">
-                            <td colspan="6" class="text-center text-muted py-5">
-                                <i class="fa-solid fa-sack-dollar fa-3x mb-3"></i><br>
-                                No se han registrado ventas aún.
+                                </button>
                             </td>
                         </tr>
                     </tbody>
@@ -58,6 +54,30 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalGenerico" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"> <div class="modal-dialog modal-lg"> 
+            <div class="modal-content">
+                <div class="modal-header text-white" style="background-color: #6f42c1;">
+                    <h5 class="modal-title" id="tituloModal">Título</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="contenedorFormulario">
+                    </div>
+            </div>
+        </div>
+    </div>
+
     <footer th:replace="~{layout/layout :: footer}"></footer>
+
+    <script>
+        function abrirModal(url, titulo) {
+            $('#tituloModal').text(titulo);
+            $.get(url, function(data) {
+                $('#contenedorFormulario').html(data);
+                var myModal = new bootstrap.Modal(document.getElementById('modalGenerico'));
+                myModal.show();
+            });
+        }
+    </script>
+
 </body>
 </html>

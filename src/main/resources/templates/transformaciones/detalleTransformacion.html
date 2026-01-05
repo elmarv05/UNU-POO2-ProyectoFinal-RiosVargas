@@ -1,109 +1,71 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{layout/layout :: head}"></head>
-<body>
-
-    <header th:replace="~{layout/layout :: navbar}"></header>
-
-    <div class="container mt-4">
+<div>
+    <div class="modal-body p-0">
         
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="text-secondary"><i class="fa-solid fa-file-contract"></i> Detalle de Producción</h2>
-            <a th:href="@{/web/transformaciones}" class="btn btn-outline-secondary">
-                <i class="fa-solid fa-arrow-left"></i> Volver al Listado
-            </a>
+        <div class="bg-light p-4 text-center border-bottom">
+            <h5 class="mb-1 text-secondary">REGISTRO DE PRODUCCIÓN</h5>
+            <h3 class="fw-bold text-dark mb-0" th:text="${t.codigo}">TR-000</h3>
+            <span class="badge bg-success mt-2">PROCESADO EXITOSAMENTE</span>
         </div>
 
-        <div class="card shadow border-0">
-            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
-                <h5 class="mb-0">
-                    <i class="fa-solid fa-hashtag"></i> Código: <span class="fw-bold text-warning" th:text="${t.codigo}">TR-000</span>
-                </h5>
-                <span class="badge bg-success"><i class="fa-solid fa-check"></i> PROCESADO</span>
+        <div class="p-4">
+            
+            <div class="row text-center mb-4">
+                <div class="col-4 border-end">
+                    <small class="text-muted fw-bold d-block">FECHA</small>
+                    <span th:text="${#temporals.format(t.fecha, 'dd/MM/yyyy')}"></span>
+                </div>
+                <div class="col-4 border-end">
+                    <small class="text-muted fw-bold d-block">HORA</small>
+                    <span th:text="${#temporals.format(t.fecha, 'HH:mm')}"></span>
+                </div>
+                <div class="col-4">
+                    <small class="text-muted fw-bold d-block">RESPONSABLE</small>
+                    <span class="text-primary fw-bold" th:text="${t.trabajador?.username}">User</span>
+                </div>
             </div>
 
-            <div class="card-body bg-light">
+            <div class="row align-items-center">
                 
-                <div class="alert alert-white border shadow-sm mb-4">
-                    <div class="row text-center text-md-start">
-
-                        <div class="col-md-3 border-end">
-                            <small class="text-muted d-block fw-bold text-uppercase">Fecha de Registro</small>
-                            <span class="fs-4 text-dark" th:text="${#temporals.format(t.fecha, 'dd/MM/yyyy')}">01/01/2025</span>
+                <div class="col-5 text-center">
+                    <div class="card border-primary bg-primary-subtle shadow-sm">
+                        <div class="card-body p-2">
+                            <small class="text-primary fw-bold">INPUT (CONSUMO)</small>
+                            <h4 class="fw-bold my-1 text-dark" th:text="${t.cantidadOrigen}">100</h4>
+                            <span class="badge bg-primary" th:text="${t.materialOrigen.unidad}">KG</span>
+                            <div class="mt-2 small text-dark fw-bold text-truncate" th:text="${t.materialOrigen.nombre}">Botellas</div>
                         </div>
-
-                        <div class="col-md-3 border-end">
-                            <small class="text-muted d-block fw-bold text-uppercase">Hora</small>
-                            <span class="fs-4 text-dark" th:text="${#temporals.format(t.fecha, 'HH:mm:ss')}">14:30</span>
-                        </div>
-
-                        <div class="col-md-3 border-end">
-                            <small class="text-muted d-block fw-bold text-uppercase">Responsable</small>
-                            <span class="fs-4 text-primary" th:text="${t.trabajador?.nombre} ?: 'Desconocido'">Juan Pérez</span>
-                        </div>
-
-                        <div class="col-md-3">
-                            <small class="text-muted d-block fw-bold text-uppercase">Rol</small>
-                            <span class="fs-4 text-primary" th:text="${t.trabajador?.rol.nombre} ?: 'Desconocido'">Editor</span>
-                        </div>
-
                     </div>
                 </div>
 
-                <div class="row text-center align-items-center justify-content-center my-4">
-                    
-                    <div class="col-md-5">
-                        <div class="card border-primary h-100 shadow-sm">
-                            <div class="card-header bg-primary text-white">
-                                <i class="fa-solid fa-recycle"></i> Materia Prima (Origen)
-                            </div>
-                            
-                            <div class="card-body">
-                                <h2 class="card-title text-primary fw-bold display-6" th:text="${t.cantidadOrigen}">0.00</h2>
-                                <span class="badge bg-primary mb-3" th:text="${t.materialOrigen.unidad}">KG</span>
-                                
-                                <h5 class="card-text text-dark" th:text="${t.materialOrigen.nombre}">Nombre Residuo</h5>
-                                
-                                <div class="mt-2 text-muted small">
-                                    Categoría: <strong th:text="${t.materialOrigen.categoria.nombre}">PAPEL</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2 my-3">
-                        <div class="d-flex flex-column align-items-center text-muted opacity-50">
-                            <small class="fw-bold mb-1">TRANSFORMACIÓN</small>
-                            <i class="fa-solid fa-circle-arrow-right fa-3x text-secondary"></i>
-                        </div>
-                    </div>
-
-                    <div class="col-md-5">
-                        <div class="card border-success h-100 shadow-sm">
-                            <div class="card-header bg-success text-white">
-                                <i class="fa-solid fa-box-open"></i> Producto Terminado (Destino)
-                            </div>
-                            <div class="card-body">
-                                <h2 class="card-title text-success fw-bold display-6" th:text="${t.cantidadDestino}">0.00</h2>
-                                <span class="badge bg-success mb-3">UNIDADES</span> <h5 class="card-text text-dark" th:text="${t.materialDestino.nombre}">Nombre Producto</h5>
-                                
-                                <div class="mt-2 text-muted small">
-                                    Categoría: <strong th:text="${t.materialDestino.categoria.nombre}">PAPEL</strong>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                <div class="col-2 text-center">
+                    <i class="fa-solid fa-arrow-right fa-2x text-secondary opacity-50"></i>
                 </div>
-                
-                <div class="text-center mt-4 text-muted fst-italic">
-                    <small>Este registro certifica que la materia prima ha sido descontada del inventario y el producto final ha sido ingresado.</small>
+
+                <div class="col-5 text-center">
+                    <div class="card border-success bg-success-subtle shadow-sm">
+                        <div class="card-body p-2">
+                            <small class="text-success fw-bold">OUTPUT (PRODUCCIÓN)</small>
+                            <h4 class="fw-bold my-1 text-dark" th:text="${t.cantidadDestino}">10</h4>
+                            <span class="badge bg-success">UNIDADES</span>
+                            <div class="mt-2 small text-dark fw-bold text-truncate" th:text="${t.materialDestino.nombre}">Bloques</div>
+                        </div>
+                    </div>
                 </div>
 
             </div>
+
+            <div class="alert alert-secondary mt-4 mb-0 small text-center">
+                <i class="fa-solid fa-info-circle"></i> Categoría del Proceso: 
+                <strong th:text="${t.materialOrigen.categoria.nombre}">PLÁSTICO</strong>
+            </div>
+
         </div>
     </div>
-    
-    <footer th:replace="~{layout/layout :: footer}"></footer>
-</body>
-</html>
+
+    <div class="modal-footer bg-light">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn text-white" style="background-color: #6f42c1; border-color: #6f42c1;" onclick="window.print()">
+            <i class="fa-solid fa-print"></i> Imprimir Comprobante
+        </button>
+    </div>
+</div>

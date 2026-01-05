@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reciclaje.dto.IComprasPorMes;
 import com.reciclaje.model.Compra;
 import com.reciclaje.model.DetalleCompra;
 import com.reciclaje.model.Material;
@@ -62,4 +63,9 @@ public class CompraService {
         }
         return compraRepository.save(compra);
     }
+    
+    public List<IComprasPorMes> obtenerReporteMensual() {
+        return compraRepository.obtenerComprasPorMes();
+    }
+    
 }

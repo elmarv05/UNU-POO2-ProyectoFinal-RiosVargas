@@ -9,9 +9,9 @@
         
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2><i class="fa-solid fa-cart-shopping"></i> Historial de Compras</h2>
-            <a th:href="@{/web/compras/nueva}" class="btn btn-success">
+            <button class="btn btn-primary" onclick="abrirModal('/web/compras/nueva', 'Nueva Compra')">
                 <i class="fa-solid fa-cash-register"></i> Registrar Compra
-            </a>
+            </button>
         </div>
 
         <div class="text-end mb-3">
@@ -41,16 +41,11 @@
                             <td th:text="${c.trabajador.username}">admin</td>
                             <td class="text-end fw-bold text-success" th:text="'S/ ' + ${#numbers.formatDecimal(c.total, 1, 2)}">S/ 150.00</td>
                             <td class="text-center">
-                                <a th:href="@{/web/compras/ver/{id}(id=${c.id})}" class="btn btn-info btn-sm text-white" title="Ver Detalle">
-                                    <i class="fa-solid fa-eye"> </i>
-                                </a>
-
-                            </td>
-                        </tr>
-                        <tr th:if="${compras.empty}">
-                            <td colspan="6" class="text-center text-muted py-5">
-                                <i class="fa-solid fa-box-open fa-3x mb-3"></i><br>
-                                No se han registrado compras aún.
+                                <button class="btn btn-info btn-sm text-white" 
+                                        th:onclick="'abrirModal(\'/web/compras/ver/' + ${c.id} + '\', \'Detalle de Compra\')'"
+                                        title="Ver Detalle">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
                             </td>
                         </tr>
                     </tbody>
@@ -59,6 +54,30 @@
         </div>
     </div>
 
+    <div class="modal fade" id="modalGenerico" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header text-white" style="background-color: #6f42c1;">
+                    <h5 class="modal-title" id="tituloModal">Título</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div id="contenedorFormulario"></div>
+            </div>
+        </div>
+    </div>
+
     <footer th:replace="~{layout/layout :: footer}"></footer>
+
+    <script>
+        function abrirModal(url, titulo) {
+            $('#tituloModal').text(titulo);
+            $.get(url, function(data) {
+                $('#contenedorFormulario').html(data);
+                var myModal = new bootstrap.Modal(document.getElementById('modalGenerico'));
+                myModal.show();
+            });
+        }
+    </script>
+
 </body>
 </html>
