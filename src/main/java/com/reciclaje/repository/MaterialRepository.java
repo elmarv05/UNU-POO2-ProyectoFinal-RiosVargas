@@ -10,4 +10,8 @@ public interface MaterialRepository extends JpaRepository<Material, Integer> {
     
     // ESTA ES LA CLAVE: Nos permite pedir solo "RESIDUO" o solo "PRODUCTO"
     List<Material> findByTipo(String tipo);
+    
+    int countByTipo(String tipo);
+    
+    List<Material> findByStockLessThan(Double cantidad);
 }

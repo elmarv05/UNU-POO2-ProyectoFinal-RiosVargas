@@ -53,10 +53,10 @@ public class TransformacionService {
                       : 1.0;
         
         // Calculamos cuánto debería ser el consumo real
-        Double cantidadOrigenCalculada = t.getCantidadDestino() * factor;
+        Double calc = t.getCantidadDestino() * factor;
         
         // Opcional: Forzar el valor calculado (sobrescribir lo que envió el form)
-        t.setCantidadOrigen(cantidadOrigenCalculada);
+        t.setCantidadOrigen(calc);
 
         // 3. Validar Stock
         if (origen.getStock() < t.getCantidadOrigen()) {

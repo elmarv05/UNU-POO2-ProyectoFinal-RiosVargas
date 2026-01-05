@@ -58,30 +58,64 @@ public class VentaController {
         return "ventas/formularioVenta"; // Vista que crearemos luego
     }
 
-    // 3. AGREGAR ITEM AL CARRITO (Temporal en sesión)
+ // En VentaController.java
+
     @PostMapping("/agregar-item")
     public String agregarItem(@ModelAttribute Venta venta, 
-                              @RequestParam Integer materialId, 
-                              @RequestParam Double cantidad, 
-                              @RequestParam Double precio, // Precio de venta sugerido o modificado
+                              // 1. Hacemos los parámetros opcionales para manejar nosotros el error
+                              @RequestParam(required = false) Integer materialId, 
+                              @RequestParam(required = false) Double cantidad, 
+                              @RequestParam(required = false) Double precio, 
                               Model model) {
         
+        // 2. Validación manual: Si falta algo, volvemos con un mensaje de error
+        if (materialId == null || cantidad == null || precio == null) {
+            model.addAttribute("error", "Error: Debe seleccionar un producto, cantidad y precio válidos.");
+            cargarListas(model); // Recargamos las listas para que no salga la página en blanco
+            return "ventas/formularioVenta";
+        }
+
         Material producto = materialService.buscarPorId(materialId);
 
-        // Validación básica de stock antes de agregar a la lista visual
+        // Validación de Stock
         if (producto.getStock() < cantidad) {
             model.addAttribute("error", "Stock insuficiente. Disponible: " + producto.getStock());
             cargarListas(model);
             return "ventas/formularioVenta";
         }
 
-        DetalleVenta detalle = new DetalleVenta();
-        detalle.setMaterial(producto);
-        detalle.setCantidad(cantidad);
-        detalle.setPrecio(precio);
-        detalle.setSubtotal(cantidad * precio);
-    
-        venta.agregarDetalle(detalle);
+        // --- LÓGICA DE FUSIÓN (MERGE) PARA EVITAR DUPLICADOS ---
+        boolean existe = false;
+        // IMPORTANTE: Inicializar detalles si es nulo (puede pasar en nueva venta)
+        if (venta.getDetalles() == null) {
+            venta.setDetalles(new ArrayList<>());
+        }
+
+        for (DetalleVenta det : venta.getDetalles()) {
+            if (det.getMaterial().getId().equals(materialId)) {
+                // Verificamos stock acumulado
+                if (producto.getStock() < (det.getCantidad() + cantidad)) {
+                    model.addAttribute("error", "Stock insuficiente para sumar esa cantidad adicional.");
+                    cargarListas(model);
+                    return "ventas/formularioVenta";
+                }
+                // Fusionamos
+                det.setCantidad(det.getCantidad() + cantidad);
+                det.setPrecio(precio); 
+                det.setSubtotal(det.getCantidad() * precio);
+                existe = true;
+                break;
+            }
+        }
+
+        if (!existe) {
+            DetalleVenta detalle = new DetalleVenta();
+            detalle.setMaterial(producto);
+            detalle.setCantidad(cantidad);
+            detalle.setPrecio(precio);
+            detalle.setSubtotal(cantidad * precio);
+            venta.agregarDetalle(detalle);
+        }
      
         // Recalcular Total
         double sumaTotal = venta.getDetalles().stream().mapToDouble(DetalleVenta::getSubtotal).sum();
@@ -90,7 +124,6 @@ public class VentaController {
         cargarListas(model);
         return "ventas/formularioVenta";
     }
-
     // 4. ELIMINAR ITEM DEL CARRITO
     @GetMapping("/eliminar-item/{index}")
     public String eliminarItem(@ModelAttribute Venta venta, @PathVariable int index, Model model) {

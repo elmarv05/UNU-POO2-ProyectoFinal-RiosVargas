@@ -59,7 +59,7 @@
                                     <label class="form-label text-success-emphasis fw-bold">Precio Venta (Ingreso)</label>
                                     <div class="input-group">
                                         <span class="input-group-text">S/</span>
-                                        <input type="number" step="0.01" class="form-control border-success" th:field="*{precioVenta}">
+                                        <input type="number" step="0.1" class="form-control border-success" th:field="*{precioVenta}">
                                         <span class="input-group-text">/u</span>
                                     </div>
                                     <small class="text-muted">Venta a industria.</small>
@@ -69,7 +69,7 @@
                                     <label class="form-label text-info-emphasis fw-bold">Factor Conversión</label>
                                     <div class="input-group">
                                         <span class="input-group-text bg-info text-white fw-bold">x</span>
-                                        <input type="number" step="0.01" class="form-control border-info" th:field="*{factorConversion}" placeholder="10.0">
+                                        <input type="number" step="0.1" class="form-control border-info" th:field="*{factorConversion}" placeholder="10.0">
                                     </div>
                                     <small class="text-muted">KG de residuo para hacer 1 producto.</small>
                                 </div>

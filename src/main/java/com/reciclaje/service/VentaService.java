@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reciclaje.dto.IVentasPorMes;
 import com.reciclaje.model.DetalleVenta;
 import com.reciclaje.model.Material;
 import com.reciclaje.model.Venta;
@@ -38,6 +39,19 @@ public class VentaService {
      * 4. DESCUENTA el stock.
      * 5. Guarda todo.
      */
+    
+ // En VentaService
+
+ // Total histórico
+ public Double obtenerTotalVentas() {
+     return ventaRepository.sumarVentasTotales();
+ }
+
+ // Datos para el Gráfico
+ public List<IVentasPorMes> obtenerReporteMensual() {
+     return ventaRepository.obtenerVentasPorMes();
+ }
+    
     @Transactional
     public void guardarVenta(Venta venta) {
         

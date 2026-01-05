@@ -25,7 +25,12 @@ public class ProveedorService {
     public Proveedor buscarPorId(Integer id) {
         return proveedorRepository.findById(id).orElse(null);
     }
-
+    
+ // En ClienteService
+    public long contarProveedores() {
+        return proveedorRepository.count(); // JpaRepository ya trae este método
+    }
+    
     public void eliminar(Integer id) {
     	Proveedor c = buscarPorId(id);
         if (c != null) {

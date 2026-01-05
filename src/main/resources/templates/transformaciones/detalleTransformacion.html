@@ -2,39 +2,108 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/layout :: head}"></head>
 <body>
+
     <header th:replace="~{layout/layout :: navbar}"></header>
+
     <div class="container mt-4">
-        <div class="mb-3"><a th:href="@{/web/transformaciones}" class="btn btn-outline-secondary">Volver</a></div>
-        <div class="card shadow">
-            <div class="card-header bg-warning text-dark d-flex justify-content-between">
-                <h4 class="mb-0">Transformación: <span th:text="${t.codigo}"></span></h4>
-                <span class="badge bg-dark" th:text="${#temporals.format(t.fecha, 'dd/MM/yyyy HH:mm')}"></span>
+        
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="text-secondary"><i class="fa-solid fa-file-contract"></i> Detalle de Producción</h2>
+            <a th:href="@{/web/transformaciones}" class="btn btn-outline-secondary">
+                <i class="fa-solid fa-arrow-left"></i> Volver al Listado
+            </a>
+        </div>
+
+        <div class="card shadow border-0">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+                <h5 class="mb-0">
+                    <i class="fa-solid fa-hashtag"></i> Código: <span class="fw-bold text-warning" th:text="${t.codigo}">TR-000</span>
+                </h5>
+                <span class="badge bg-success"><i class="fa-solid fa-check"></i> PROCESADO</span>
             </div>
-            <div class="card-body">
-                <div class="row text-center align-items-center my-4">
-                    <div class="col-md-4">
-                        <div class="card border-danger shadow-sm">
-                            <div class="card-body">
-                                <h6 class="text-danger fw-bold">Materia Prima</h6>
-                                <h3 th:text="${t.cantidadOrigen}"></h3>
-                                <p class="mb-0 fw-bold" th:text="${t.materialOrigen.nombre}"></p>
-                            </div>
+
+            <div class="card-body bg-light">
+                
+                <div class="alert alert-white border shadow-sm mb-4">
+                    <div class="row text-center text-md-start">
+
+                        <div class="col-md-3 border-end">
+                            <small class="text-muted d-block fw-bold text-uppercase">Fecha de Registro</small>
+                            <span class="fs-4 text-dark" th:text="${#temporals.format(t.fecha, 'dd/MM/yyyy')}">01/01/2025</span>
                         </div>
-                    </div>
-                    <div class="col-md-4"><i class="fa-solid fa-arrow-right fa-3x text-muted"></i></div>
-                    <div class="col-md-4">
-                        <div class="card border-success shadow-sm">
-                            <div class="card-body">
-                                <h6 class="text-success fw-bold">Producto Generado</h6>
-                                <h3 th:text="${t.cantidadDestino}"></h3>
-                                <p class="mb-0 fw-bold" th:text="${t.materialDestino.nombre}"></p>
-                            </div>
+
+                        <div class="col-md-3 border-end">
+                            <small class="text-muted d-block fw-bold text-uppercase">Hora</small>
+                            <span class="fs-4 text-dark" th:text="${#temporals.format(t.fecha, 'HH:mm:ss')}">14:30</span>
                         </div>
+
+                        <div class="col-md-3 border-end">
+                            <small class="text-muted d-block fw-bold text-uppercase">Responsable</small>
+                            <span class="fs-4 text-primary" th:text="${t.trabajador?.nombre} ?: 'Desconocido'">Juan Pérez</span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <small class="text-muted d-block fw-bold text-uppercase">Rol</small>
+                            <span class="fs-4 text-primary" th:text="${t.trabajador?.rol.nombre} ?: 'Desconocido'">Editor</span>
+                        </div>
+
                     </div>
                 </div>
+
+                <div class="row text-center align-items-center justify-content-center my-4">
+                    
+                    <div class="col-md-5">
+                        <div class="card border-primary h-100 shadow-sm">
+                            <div class="card-header bg-primary text-white">
+                                <i class="fa-solid fa-recycle"></i> Materia Prima (Origen)
+                            </div>
+                            
+                            <div class="card-body">
+                                <h2 class="card-title text-primary fw-bold display-6" th:text="${t.cantidadOrigen}">0.00</h2>
+                                <span class="badge bg-primary mb-3" th:text="${t.materialOrigen.unidad}">KG</span>
+                                
+                                <h5 class="card-text text-dark" th:text="${t.materialOrigen.nombre}">Nombre Residuo</h5>
+                                
+                                <div class="mt-2 text-muted small">
+                                    Categoría: <strong th:text="${t.materialOrigen.categoria.nombre}">PAPEL</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 my-3">
+                        <div class="d-flex flex-column align-items-center text-muted opacity-50">
+                            <small class="fw-bold mb-1">TRANSFORMACIÓN</small>
+                            <i class="fa-solid fa-circle-arrow-right fa-3x text-secondary"></i>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5">
+                        <div class="card border-success h-100 shadow-sm">
+                            <div class="card-header bg-success text-white">
+                                <i class="fa-solid fa-box-open"></i> Producto Terminado (Destino)
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-title text-success fw-bold display-6" th:text="${t.cantidadDestino}">0.00</h2>
+                                <span class="badge bg-success mb-3">UNIDADES</span> <h5 class="card-text text-dark" th:text="${t.materialDestino.nombre}">Nombre Producto</h5>
+                                
+                                <div class="mt-2 text-muted small">
+                                    Categoría: <strong th:text="${t.materialDestino.categoria.nombre}">PAPEL</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="text-center mt-4 text-muted fst-italic">
+                    <small>Este registro certifica que la materia prima ha sido descontada del inventario y el producto final ha sido ingresado.</small>
+                </div>
+
             </div>
         </div>
     </div>
+    
     <footer th:replace="~{layout/layout :: footer}"></footer>
 </body>
 </html>

@@ -2,69 +2,150 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{layout/layout :: head}"></head>
 <body>
+
     <header th:replace="~{layout/layout :: navbar}"></header>
+
     <div class="container mt-4">
         <div class="row justify-content-center">
-            <div class="col-md-10">
-                <h2 class="mb-4 text-center"><i class="fa-solid fa-industry"></i> Registrar Producción</h2>
-                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <div class="col-md-11">
+                
+                <h2 class="mb-4 text-center text-secondary"><i class="fa-solid fa-industry"></i> Registrar Producción</h2>
+
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
                     <i class="fa-solid fa-triangle-exclamation"></i> <span th:text="${error}">Error</span>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
+
                 <form th:action="@{/web/transformaciones/guardar}" th:object="${transformacion}" method="post">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="card border-danger mb-3 h-100">
-                                <div class="card-header bg-danger text-white">1. Materia Prima (Origen)</div>
+                    
+                    <div class="row g-4"> <div class="col-md-6">
+                            <div class="card border-primary h-100 shadow-sm">
+                                <div class="card-header bg-primary text-white">
+                                    <i class="fa-solid fa-recycle"></i> 1. Materia Prima (Origen)
+                                </div>
                                 <div class="card-body bg-light">
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Seleccione Residuo</label>
-                                        <select class="form-select" th:field="*{materialOrigen}" id="selectResiduo" onchange="calcularRequerimiento()" required>
+                                        <label class="form-label fw-bold text-primary">Seleccione Residuo</label>
+                                        <select class="form-select border-primary" th:field="*{materialOrigen}" id="selectResiduo" onchange="filtrarProductos(); calcularRequerimiento();" required>
                                             <option value="">-- Seleccione --</option>
-                                            <option th:each="m : ${residuos}" th:value="${m.id}" th:text="${m.nombre}" th:data-stock="${m.stock}" th:data-unidad="${m.unidad}"></option>
+                                            <option th:each="m : ${residuos}" 
+                                                    th:value="${m.id}" 
+                                                    th:text="${m.nombre}" 
+                                                    th:data-stock="${m.stock}" 
+                                                    th:data-unidad="${m.unidad}"
+                                                    th:data-categoria="${m.categoria.id}"> </option>
                                         </select>
                                         <div class="mt-2 text-muted small" id="stockInfo">Stock disponible: -</div>
                                     </div>
+                                    
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Material Necesario</label>
+                                        <label class="form-label fw-bold text-primary">Material Necesario</label>
                                         <div class="input-group">
-                                            <input type="number" step="0.01" class="form-control bg-white" th:field="*{cantidadOrigen}" id="inputCantidadOrigen" readonly>
-                                            <span class="input-group-text" id="labelUnidadOrigen">KG</span>
+                                            <input type="number" step="0.01" class="form-control bg-white border-primary" th:field="*{cantidadOrigen}" id="inputCantidadOrigen" readonly>
+                                            <span class="input-group-text bg-primary text-white" id="labelUnidadOrigen">KG</span>
                                         </div>
                                         <small class="text-danger fw-bold" id="msgErrorStock" style="display: none;">Stock insuficiente</small>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-md-6">
-                            <div class="card border-success mb-3 h-100">
-                                <div class="card-header bg-success text-white">2. Producto a Fabricar (Destino)</div>
+                            <div class="card border-success mb-3 h-100 shadow-sm">
+                                <div class="card-header bg-success text-white">
+                                    <i class="fa-solid fa-box-open"></i> 2. Producto a Fabricar (Destino)
+                                </div>
                                 <div class="card-body bg-light">
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">Seleccione Producto</label>
-                                        <select class="form-select" th:field="*{materialDestino}" id="selectProducto" onchange="calcularRequerimiento()" required>
-                                            <option value="">-- Seleccione --</option>
-                                            <option th:each="p : ${productos}" th:value="${p.id}" th:text="${p.nombre} + ' (Req: ' + ${p.factorConversion != null ? p.factorConversion : 1} + ')'" th:data-factor="${p.factorConversion != null ? p.factorConversion : 1}"></option>
+                                        <label class="form-label fw-bold text-success">Seleccione Producto</label>
+                                        <select class="form-select border-success" th:field="*{materialDestino}" id="selectProducto" onchange="calcularRequerimiento()" required>
+                                            <option value="" data-categoria="TODAS">-- Seleccione --</option>
+                                            <option th:each="p : ${productos}" 
+                                                    th:value="${p.id}" 
+                                                    th:text="${p.nombre} + ' (Req: ' + ${p.factorConversion != null ? p.factorConversion : 1} + ')'" 
+                                                    th:data-factor="${p.factorConversion != null ? p.factorConversion : 1}"
+                                                    th:data-categoria="${p.categoria.id}"> </option>
                                         </select>
+                                        <div class="form-text text-muted" id="msgFiltro"><small>Seleccione un residuo primero para ver productos compatibles.</small></div>
                                     </div>
+                                    
                                     <div class="mb-3">
-                                        <label class="form-label fw-bold">¿Cantidad a Producir?</label>
-                                        <input type="number" step="1" class="form-control" th:field="*{cantidadDestino}" id="inputCantidadDestino" oninput="calcularRequerimiento()" required>
+                                        <label class="form-label fw-bold text-success">¿Cantidad a Producir?</label>
+                                        <input type="number" step="1" class="form-control border-success" th:field="*{cantidadDestino}" id="inputCantidadDestino" oninput="calcularRequerimiento()" required>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-5 mt-3">
-                        <a th:href="@{/web/transformaciones}" class="btn btn-secondary me-2">Cancelar</a>
-                        <button type="submit" class="btn btn-primary btn-lg" id="btnGuardar" disabled>Procesar</button>
+
+                    <div class="d-flex justify-content-end gap-2 mb-5 mt-4">
+                        <a th:href="@{/web/transformaciones}" class="btn btn-secondary px-4">Cancelar</a>
+                        <button type="submit" class="btn btn-primary btn-lg px-5 shadow" id="btnGuardar" disabled>
+                            <i class="fa-solid fa-gears"></i> Procesar
+                        </button>
                     </div>
+
                 </form>
             </div>
         </div>
     </div>
+    
     <footer th:replace="~{layout/layout :: footer}"></footer>
+
     <script>
+        // Función 1: Filtrar el segundo select basado en la categoría del primero
+        function filtrarProductos() {
+            const selectResiduo = document.getElementById("selectResiduo");
+            const selectProducto = document.getElementById("selectProducto");
+            const msgFiltro = document.getElementById("msgFiltro");
+
+            // Obtenemos la opción seleccionada
+            const optionSeleccionada = selectResiduo.options[selectResiduo.selectedIndex];
+            
+            // Leemos la categoría (puede ser undefined si es la opción por defecto)
+            const categoriaId = optionSeleccionada.getAttribute("data-categoria");
+
+            // Reseteamos la selección del producto para evitar inconsistencias
+            selectProducto.value = "";
+            
+            // Recorremos todas las opciones de productos
+            let opcionesVisibles = 0;
+            for (let i = 0; i < selectProducto.options.length; i++) {
+                const option = selectProducto.options[i];
+                const catProd = option.getAttribute("data-categoria");
+
+                // Siempre mostramos la opción por defecto ("-- Seleccione --")
+                if (option.value === "") {
+                    option.style.display = "block";
+                    continue;
+                }
+
+                // Lógica de filtrado
+                if (categoriaId && catProd === categoriaId) {
+                    option.style.display = "block"; // Mostrar si coincide
+                    option.hidden = false;          // Asegurar compatibilidad
+                    opcionesVisibles++;
+                } else {
+                    option.style.display = "none";  // Ocultar si no coincide
+                    option.hidden = true;
+                }
+            }
+            
+            // Mensaje de ayuda visual
+            if(categoriaId) {
+                msgFiltro.innerHTML = `<small class="text-success"><i class="fa-solid fa-check"></i> Mostrando productos compatibles con esta categoría.</small>`;
+            } else {
+                msgFiltro.innerHTML = `<small>Seleccione un residuo primero.</small>`;
+            }
+            
+            // Si después de filtrar no queda nada (raro, pero posible), avisar
+            if(categoriaId && opcionesVisibles === 0) {
+                 msgFiltro.innerHTML = `<small class="text-danger"><i class="fa-solid fa-circle-xmark"></i> No hay productos registrados para esta categoría.</small>`;
+            }
+        }
+
+        // Función 2: Calcular stock y requerimientos (Tu lógica original mejorada)
         function calcularRequerimiento() {
             const selectResiduo = document.getElementById("selectResiduo");
             const selectProducto = document.getElementById("selectProducto");
@@ -78,10 +159,13 @@
             const optionResiduo = selectResiduo.options[selectResiduo.selectedIndex];
             const stockDisponible = parseFloat(optionResiduo.getAttribute("data-stock")) || 0;
             const unidadResiduo = optionResiduo.getAttribute("data-unidad") || "KG";
+            
             const optionProducto = selectProducto.options[selectProducto.selectedIndex];
             const factor = parseFloat(optionProducto.getAttribute("data-factor")) || 0;
+            
             const cantidadDeseada = parseFloat(inputDestino.value) || 0;
 
+            // Actualizar info visual de stock
             if (selectResiduo.value) {
                 stockInfo.innerHTML = `Stock disponible: <strong>${stockDisponible} ${unidadResiduo}</strong>`;
                 labelUnidad.textContent = unidadResiduo;
@@ -89,22 +173,29 @@
                 stockInfo.textContent = "Stock disponible: -";
             }
 
+            // Calcular cuánto material necesitamos
             let cantidadRequerida = 0;
-            if (cantidadDeseada > 0 && factor > 0) cantidadRequerida = cantidadDeseada * factor;
+            if (cantidadDeseada > 0 && factor > 0) {
+                cantidadRequerida = cantidadDeseada * factor;
+            }
+            
             inputOrigen.value = cantidadRequerida > 0 ? cantidadRequerida.toFixed(2) : "";
 
+            // Validar para habilitar/deshabilitar botón
             let esValido = false;
             if (selectResiduo.value && selectProducto.value && cantidadDeseada > 0) {
                 if (cantidadRequerida <= stockDisponible) {
                     esValido = true;
                     msgError.style.display = "none";
-                    inputOrigen.classList.remove("is-invalid");
+                    inputOrigen.classList.remove("is-invalid", "border-danger");
+                    inputOrigen.classList.add("border-success");
                 } else {
                     esValido = false;
                     msgError.style.display = "block";
-                    inputOrigen.classList.add("is-invalid");
+                    inputOrigen.classList.add("is-invalid", "border-danger");
                 }
             }
+            
             btnGuardar.disabled = !esValido;
         }
     </script>

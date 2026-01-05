@@ -21,6 +21,14 @@ public class MaterialService {
     public List<Material> listarPorTipo(String tipo) {
         return materialRepository.findByTipo(tipo);
     }
+    
+    public List<Material> listarResiduos() {
+        return materialRepository.findByTipo("RESIDUO");
+    }
+    
+    public List<Material> listarProductos() {
+        return materialRepository.findByTipo("PRODUCTO");
+    }
 
     public void guardar(Material material) {
         // Lógica de seguridad: Evitar NullPointerExceptions en precios y stock
@@ -32,6 +40,18 @@ public class MaterialService {
 
         materialRepository.save(material);
     }
+    
+ // En MaterialService
+
+ // 1. Contar solo productos (int)
+ public int contarProductos() {
+     return materialRepository.countByTipo("PRODUCTO");
+ }
+
+ // 2. Alerta de Stock
+ public List<Material> buscarStockBajo(Double min) {
+     return materialRepository.findByStockLessThan(min);
+ }
 
     public Material buscarPorId(Integer id) {
         return materialRepository.findById(id).orElse(null);

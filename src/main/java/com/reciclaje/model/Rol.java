@@ -1,4 +1,4 @@
-package com.reciclaje.model;
+	package com.reciclaje.model;
 
 import jakarta.persistence.*;
 import lombok.*;

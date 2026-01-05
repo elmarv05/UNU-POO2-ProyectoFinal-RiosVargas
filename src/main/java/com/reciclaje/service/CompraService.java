@@ -31,6 +31,12 @@ public class CompraService {
     }
 
     
+ // En CompraService
+
+    public Double obtenerTotalCompras() {
+        return compraRepository.sumarComprasTotales();
+    }
+    
     // @Transactional es como begin - end
     @Transactional
     public Compra guardarCompra(Compra compra) {

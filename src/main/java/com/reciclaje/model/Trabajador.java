@@ -33,7 +33,7 @@ public class Trabajador {
     private String username;
 
     @Column(nullable = false, length = 255) 
-    private String password;
+    private String pass;
 
     @Column(nullable = false)
     private boolean activo = true;

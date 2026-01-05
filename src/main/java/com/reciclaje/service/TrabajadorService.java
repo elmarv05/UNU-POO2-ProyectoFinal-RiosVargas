@@ -42,7 +42,7 @@ public class TrabajadorService {
     public Trabajador validarCredenciales(String nombre, String pass) {
         Trabajador t = trabajadorRepository.findByUsername(nombre);
         
-        if (t!=null&&t.getPassword().equals(pass)&&t.isActivo()) {
+        if (t!=null&&t.getPass().equals(pass)&&t.isActivo()) {
             return t;
         }
         return null; 

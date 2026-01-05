@@ -5,6 +5,7 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "compras")
@@ -18,10 +19,11 @@ public class Compra {
     private Integer id;
 
     @Column(name = "fecha_compra", nullable = false)
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fecha; 
 
     @Column(name = "codigo_operacion", unique = true, length = 20)
-    private String codigo; 
+    private String codigo;
 
     @Column(nullable = false)
     private Double total;

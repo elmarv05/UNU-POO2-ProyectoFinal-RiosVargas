@@ -51,18 +51,44 @@ public class CompraController {
         return "compras/formularioCompra";
     }
 
-    @PostMapping("/agregar-item")
-    public String agregarItem(@ModelAttribute Compra compra, @RequestParam Integer materialId, @RequestParam Double cantidad, @RequestParam Double precio, Model model){
-        
-        Material material = materialService.buscarPorId(materialId);
+ // En CompraController.java
 
-        DetalleCompra detalle = new DetalleCompra();
-        detalle.setMaterial(material);
-        detalle.setCantidad(cantidad);
-        detalle.setPrecio(precio);
-        detalle.setSubtotal(cantidad * precio);
-    
-        compra.agregarDetalle(detalle);
+    @PostMapping("/agregar-item")
+    public String agregarItem(@ModelAttribute Compra compra, 
+                              @RequestParam(required = false) Integer materialId, 
+                              @RequestParam(required = false) Double cantidad, 
+                              @RequestParam(required = false) Double precio, 
+                              Model model) {
+        
+        // 1. Validación de seguridad
+        if (materialId == null || cantidad == null || precio == null) {
+            model.addAttribute("error", "Error: Seleccione un material, cantidad y precio validos.");
+            cargarListas(model);
+            return "compras/formularioCompra";
+        }
+
+        // 2. Lógica de Fusión (Merge)
+        boolean existe = false;
+        if (compra.getDetalles() == null) compra.setDetalles(new ArrayList<>());
+
+        for (DetalleCompra det : compra.getDetalles()) {
+            if (det.getMaterial().getId().equals(materialId)) {
+                det.setCantidad(det.getCantidad() + cantidad);
+                det.setSubtotal(det.getCantidad() * det.getPrecio());
+                existe = true;
+                break;
+            }
+        }
+
+        if (!existe) {
+            Material material = materialService.buscarPorId(materialId);
+            DetalleCompra detalle = new DetalleCompra();
+            detalle.setMaterial(material);
+            detalle.setCantidad(cantidad);
+            detalle.setPrecio(precio);
+            detalle.setSubtotal(cantidad * precio);
+            compra.agregarDetalle(detalle);
+        }
      
         double sumaTotal = compra.getDetalles().stream().mapToDouble(DetalleCompra::getSubtotal).sum();
         compra.setTotal(sumaTotal);

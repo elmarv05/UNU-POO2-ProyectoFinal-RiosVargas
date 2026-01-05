@@ -21,6 +21,11 @@ public class ClienteService {
         return clienteRepository.findByActivoTrue();
     }
     
+ // En ClienteService
+    public int contarClientes() {
+        return (int) clienteRepository.count(); // JpaRepository ya trae este método
+    }
+    
     public void guardar(Cliente cliente) {
         clienteRepository.save(cliente);
     }
