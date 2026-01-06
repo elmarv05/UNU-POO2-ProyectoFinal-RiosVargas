@@ -1,69 +1,85 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="~{layout/layout :: head}"></head>
+
 <body>
 
-    <header th:replace="~{layout/layout :: navbar}"></header>
+    <div class="d-flex" id="wrapper">
+        <div th:replace="~{layout/layout :: sidebar}"></div>
 
-    <div class="container mt-4">
-        
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2><i class="fa-solid fa-truck-field"></i> Lista de Proveedores</h2>
-            <button class="btn btn-primary" onclick="abrirModal('/web/proveedores/nuevo', 'Nuevo Proveedor')">
-                <i class="fa-solid fa-user-plus"></i> Nuevo Proveedor
-            </button>
-        </div>
+        <div id="page-content-wrapper">
+            <nav th:replace="~{layout/layout :: topbar}"></nav>
 
-        <div class="text-end mb-3">
-            <a th:href="@{/web/reportes/proveedores}" class="btn btn-danger btn-lg">
-                <i class="fa-solid fa-file-pdf"></i> Descargar lista
-            </a>
-        </div>
+            <div class="container-fluid px-4">
 
-        <div class="card shadow-sm">
-            <div class="card-body p-0">
-                <table class="table table-striped table-hover mb-0">
-                    <thead style="--bs-table-bg: #6f42c1; --bs-table-color: white; color: white;">
-                        <tr>
-                            <th>ID</th>
-                            <th>Razón Social</th>
-                            <th>DNI/RUC</th>
-                            <th>Teléfono</th>
-                            <th>Estado</th>
-                            <th class="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="p : ${proveedores}" th:classappend="${!p.activo} ? 'table-secondary' : ''">
-                            <td th:text="${p.id}">1</td>
-                            <td th:text="${p.razonSocial}">Empresa X</td>
-                            <td th:text="${p.documento}">12345678</td>
-                            <td th:text="${p.telefono}">999999</td>
-                            
-                            <td class="text-center">
-                                <span th:if="${p.activo}" class="badge bg-success">Activo</span>
-                                <span th:unless="${p.activo}" class="badge bg-secondary">Inactivo</span>
-                            </td>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="text-primary"><i class="fa-solid fa-truck-field"></i> Lista de Proveedores</h2>
+                    <button class="btn btn-primary" onclick="abrirModal('/web/proveedores/nuevo', 'Nuevo Proveedor')">
+                        <i class="fa-solid fa-user-plus"></i> Nuevo Proveedor
+                    </button>
+                </div>
 
-                            <td class="text-center">
-                                <button class="btn btn-primary btn-sm" 
-                                        th:onclick="'abrirModal(\'/web/proveedores/editar/' + ${p.id} + '\', \'Editar Proveedor\')'"
-                                        title="Editar">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                
-                                <a th:if="${p.activo}" 
-                                   th:href="@{/web/proveedores/eliminar/{id}(id=${p.id})}" 
-                                   class="btn btn-danger btn-sm" 
-                                   onclick="return confirm('¿Dar de baja a este proveedor? (No se borrará el historial)')"
-                                   title="Dar de Baja">
-                                    <i class="fa-solid fa-user-slash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="text-end mb-3">
+                    <a th:href="@{/web/reportes/proveedores}" class="btn btn-danger btn-sm">
+                        <i class="fa-solid fa-file-pdf"></i> Descargar lista
+                    </a>
+                </div>
+
+                <div class="card shadow mb-4 border-left-warning">
+                    <div class="card-header py-3 bg-white">
+                        <h6 class="m-0 font-weight-bold text-warning">Listado General</h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Razón Social</th>
+                                        <th>DNI/RUC</th>
+                                        <th>Teléfono</th>
+                                        <th>Estado</th>
+                                        <th class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="p : ${proveedores}"
+                                        th:classappend="${!p.activo} ? 'table-secondary' : ''">
+                                        <td th:text="${p.id}"></td>
+                                        <td th:text="${p.razonSocial}"></td>
+                                        <td th:text="${p.documento}"></td>
+                                        <td th:text="${p.telefono}"></td>
+
+                                        <td class="text-center">
+                                            <span th:if="${p.activo}" class="badge bg-success">Activo</span>
+                                            <span th:unless="${p.activo}" class="badge bg-secondary">Inactivo</span>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <button class="btn btn-primary btn-sm"
+                                                th:onclick="'abrirModal(\'/web/proveedores/editar/' + ${p.id} + '\', \'Editar Proveedor\')'"
+                                                title="Editar">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </button>
+
+                                            <a th:if="${p.activo}"
+                                                th:href="@{/web/proveedores/eliminar/{id}(id=${p.id})}"
+                                                class="btn btn-danger btn-sm"
+                                                onclick="return confirm('¿Dar de baja a este proveedor? (No se borrará el historial)')"
+                                                title="Dar de Baja">
+                                                <i class="fa-solid fa-user-slash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <footer th:replace="~{layout/layout :: footer}"></footer>
         </div>
     </div>
 
@@ -72,19 +88,18 @@
             <div class="modal-content">
                 <div class="modal-header text-white" style="background-color: #6f42c1;">
                     <h5 class="modal-title" id="tituloModal">Título</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div id="contenedorFormulario"></div>
             </div>
         </div>
     </div>
 
-    <footer th:replace="~{layout/layout :: footer}"></footer>
-
     <script>
         function abrirModal(url, titulo) {
             $('#tituloModal').text(titulo);
-            $.get(url, function(data) {
+            $.get(url, function (data) {
                 $('#contenedorFormulario').html(data);
                 var myModal = new bootstrap.Modal(document.getElementById('modalGenerico'));
                 myModal.show();
@@ -93,4 +108,5 @@
     </script>
 
 </body>
+
 </html>

@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login - Recicladora Carlitos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
-        body, html {
+        body,
+        html {
             height: 100%;
             margin: 0;
-            overflow-x: hidden; /* Evita scroll horizontal */
+            overflow-x: hidden;
+            /* Evita scroll horizontal */
         }
 
         .login-container {
@@ -22,13 +25,15 @@
         /* Columna de la Imagen */
         .bg-image-col {
             /* Aquí cargamos tu archivo.png */
-            background-color: #6f42c1; /* Color de respaldo */
+            background-color: #6f42c1;
+            /* Color de respaldo */
             background-size: cover;
             background-position: center;
             position: relative;
-            min-height: 300px; /* Altura mínima para móviles */
+            min-height: 300px;
+            /* Altura mínima para móviles */
         }
-        
+
         /* Capa oscura sobre la imagen para que se vea elegante */
         .bg-overlay {
             position: absolute;
@@ -36,14 +41,15 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(75, 44, 133, 0.4); /* Tinte morado semitransparente */
+            background: rgba(75, 44, 133, 0.4);
+            /* Tinte morado semitransparente */
         }
 
         .brand-text {
             position: relative;
             z-index: 2;
             color: white;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
 
         /* Columna del Formulario */
@@ -59,15 +65,23 @@
             width: 100%;
             max-width: 400px;
             animation: slideIn 0.8s ease-out;
-            background-color: #f3eafa; /* Subtono del color de marca */
+            background-color: #f3eafa;
+            /* Subtono del color de marca */
             padding: 2rem;
             border-radius: 15px;
             box-shadow: 0 10px 25px rgba(111, 66, 193, 0.15);
         }
 
         @keyframes slideIn {
-            from { opacity: 0; transform: translateX(30px); }
-            to { opacity: 1; transform: translateX(0); }
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
 
         /* Estilos de inputs y botones mejorados */
@@ -77,7 +91,7 @@
             border: 1px solid #dee2e6;
             background-color: #ffffff;
         }
-        
+
         .form-control:focus {
             background-color: #fff;
             border-color: #6f42c1;
@@ -104,7 +118,7 @@
         .input-icon {
             position: relative;
         }
-        
+
         .input-icon i {
             position: absolute;
             right: 15px;
@@ -114,23 +128,26 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="container-fluid p-0 login-container">
         <div class="row g-0 h-100">
-            
+
             <div class="col-lg-7 d-none d-lg-flex flex-column justify-content-center align-items-center bg-image-col"
-                 th:style="'background-image: url(' + @{/img/fondo.png} + ');'">
-                
-                <div class="bg-overlay"></div> <div class="brand-text text-center p-5">
+                th:style="'background-image: url(' + @{/img/fondo.png} + ');'">
+
+                <div class="bg-overlay"></div>
+                <div class="brand-text text-center p-5">
                     <h1 class="display-4 fw-bold mb-3">Recicladora Carlitos</h1>
                     <p class="lead">Cuidando el planeta, un material a la vez.</p>
                 </div>
             </div>
 
             <div class="col-lg-5 col-12 login-form-col">
+
                 <div class="login-wrapper">
-                    
+
                     <div class="d-lg-none text-center mb-4">
                         <h2 class="fw-bold text-primary">Recicladora Carlitos</h2>
                     </div>
@@ -144,25 +161,27 @@
                         <i class="fa-solid fa-triangle-exclamation me-2"></i>
                         <span th:text="${error}"></span>
                     </div>
-                    
+
                     <div th:if="${param.logout}" class="alert alert-success d-flex align-items-center">
                         <i class="fa-solid fa-check-circle me-2"></i> Sesión cerrada exitosamente.
                     </div>
 
                     <form th:action="@{/login}" method="post">
-                        
+
                         <div class="mb-4">
                             <label for="username" class="form-label text-muted small fw-bold">USUARIO</label>
                             <div class="input-icon">
-                                <input type="text" class="form-control" id="username" name="username" placeholder="Ingresa tu usuario" required>
+                                <input type="text" class="form-control" id="username" name="username"
+                                    placeholder="Ingresa tu usuario" required>
                                 <i class="fa-solid fa-user"></i>
                             </div>
                         </div>
-                        
+
                         <div class="mb-5">
                             <label for="password" class="form-label text-muted small fw-bold">CONTRASEÑA</label>
                             <div class="input-icon">
-                                <input type="password" class="form-control" id="password" name="password" placeholder="Ingresa tu contraseña" required>
+                                <input type="password" class="form-control" id="password" name="password"
+                                    placeholder="Ingresa tu contraseña" required>
                                 <i class="fa-solid fa-lock"></i>
                             </div>
                         </div>
@@ -170,16 +189,17 @@
                         <button class="w-100 btn btn-primary-custom text-white mb-4" type="submit">
                             INGRESAR AL SISTEMA
                         </button>
-                        
+
                         <div class="text-center mt-4">
                             <p class="text-muted small">&copy; 2025 Sistema de Reciclaje v1.0</p>
                         </div>
                     </form>
                 </div>
             </div>
-            
+
         </div>
     </div>
 
 </body>
+
 </html>

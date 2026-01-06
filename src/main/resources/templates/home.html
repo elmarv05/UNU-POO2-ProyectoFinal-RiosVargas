@@ -1,234 +1,330 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="~{layout/layout :: head}"></head>
 
 <body>
 
-    <header th:replace="~{layout/layout :: navbar}"></header>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div th:replace="~{layout/layout :: sidebar}"></div>
 
-    <div class="container mt-4">
-        
-        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2" style="color: #6f42c1;"><i class="fa-solid fa-chart-line"></i> Dashboard General</h1>
-        </div>
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
 
-        <div class="row">
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-primary shadow h-100 py-2 border-0 border-start border-4 border-primary">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Clientes</div>
-                                <div class="h3 mb-0 font-weight-bold text-gray-800" th:text="${cantClientes}">0</div>
+            <nav th:replace="~{layout/layout :: topbar}"></nav>
+
+            <div class="container-fluid px-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Dashboard General</h1>
+                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                        <i class="fa-solid fa-download fa-sm text-white-50"></i> Generar Reporte
+                    </a>
+                </div>
+
+                <!-- Stats & Pie Chart Row -->
+                <div class="row">
+                    <!-- Clientes (Cyan/Info) -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-info shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Clientes
+                                        </div>
+                                        <div class="h3 mb-0 font-weight-bold text-gray-800" th:text="${cantClientes}">0
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fa-solid fa-users fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-auto"><i class="fa-solid fa-users fa-2x text-gray-300 text-muted"></i></div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-success shadow h-100 py-2 border-0 border-start border-4 border-success">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Proveedores</div>
-                                <div class="h3 mb-0 font-weight-bold text-gray-800" th:text="${cantProveedores}">0</div>
+
+                    <!-- Proveedores (Yellow/Warning) -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-warning shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                            Proveedores</div>
+                                        <div class="h3 mb-0 font-weight-bold text-gray-800"
+                                            th:text="${cantProveedores}">0</div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fa-solid fa-truck-field fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-auto"><i class="fa-solid fa-truck-field fa-2x text-muted"></i></div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-warning shadow h-100 py-2 border-0 border-start border-4 border-warning">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Productos</div>
-                                <div class="h3 mb-0 font-weight-bold text-gray-800" th:text="${cantProductos}">0</div>
+
+                    <!-- Gráfico de Inventario (Pastel) -->
+                    <div class="col-xl-6 col-md-12 mb-4">
+                        <div class="card shadow h-100">
+                            <div
+                                class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-white border-bottom-0">
+                                <h6 class="m-0 font-weight-bold text-gray-800">Distribución de Inventario</h6>
                             </div>
-                            <div class="col-auto"><i class="fa-solid fa-recycle fa-2x text-muted"></i></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-info shadow h-100 py-2 border-0 border-start border-4 border-info">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Residuos</div>
-                                <div class="h3 mb-0 font-weight-bold text-gray-800" th:text="${cantResiduos ?: 0}">0</div>
+                            <div class="card-body">
+                                <div class="chart-pie pt-4 pb-2" style="height: 200px; position: relative;">
+                                    <canvas id="chartMateriales"></canvas>
+                                </div>
                             </div>
-                            <div class="col-auto"><i class="fa-solid fa-boxes-stacked fa-2x text-muted"></i></div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Chart Row -->
+                <div class="row">
+                    <div class="col-xl-12 col-lg-12 mb-4">
+                        <div class="card shadow mb-4 border-left-primary">
+                            <div
+                                class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-white">
+                                <h6 class="m-0 font-weight-bold text-primary">Balance Financiero (Ingresos vs Egresos)
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-area" style="position: relative; height:400px;">
+                                    <canvas id="chartBalance"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alerts Row -->
+                <div class="row">
+                    <!-- Residuos Warning (Red/Danger) -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow mb-4 border-left-danger">
+                            <!-- Header styled to match listaMateriales (Residuos) -->
+                            <div class="card-header py-3 bg-white border-bottom-0">
+                                <h6 class="m-0 font-weight-bold text-danger"><i class="fa-solid fa-recycle"></i>
+                                    Alerta: Residuos (Materia Prima)</h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-striped mb-0 text-center">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th>Material</th>
+                                                <th>Categoría</th>
+                                                <th>Stock</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="prod : ${alertasStock}" th:if="${prod.tipo == 'RESIDUO'}">
+                                                <td th:text="${prod.nombre}"></td>
+                                                <td th:text="${prod.categoria.nombre}"></td>
+                                                <td class="fw-bold text-danger"
+                                                    th:text="${prod.stock} + ' ' + ${prod.unidad}"></td>
+                                                <td><span class="badge bg-danger">Bajo</span></td>
+                                            </tr>
+                                            <tr th:if="${#lists.isEmpty(alertasStock.?[tipo == 'RESIDUO'])}">
+                                                <td colspan="4" class="text-center text-success py-3">
+                                                    <i class="fa-solid fa-circle-check"></i> Stock saludable
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Productos Critical (Green/Success) -->
+                    <div class="col-lg-6 mb-4">
+                        <div class="card shadow mb-4 border-left-success">
+                            <!-- Header styled to match listaMateriales (Productos) -->
+                            <div class="card-header py-3 bg-white border-bottom-0">
+                                <h6 class="m-0 font-weight-bold text-success"><i class="fa-solid fa-box-open"></i>
+                                    Alerta: Productos
+                                    Terminados</h6>
+                            </div>
+                            <div class="card-body p-0">
+                                <div class="table-responsive">
+                                    <table class="table table-striped mb-0 text-center">
+                                        <thead class="bg-light">
+                                            <tr>
+                                                <th>Producto</th>
+                                                <th>Categoría</th>
+                                                <th>Stock</th>
+                                                <th>Estado</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="prod : ${alertasStock}" th:if="${prod.tipo == 'PRODUCTO'}">
+                                                <td th:text="${prod.nombre}"></td>
+                                                <td th:text="${prod.categoria.nombre}"></td>
+                                                <td class="fw-bold text-success"
+                                                    th:text="${prod.stock} + ' ' + ${prod.unidad}"></td>
+                                                <td><span class="badge bg-danger">Crítico</span></td>
+                                            </tr>
+                                            <tr th:if="${#lists.isEmpty(alertasStock.?[tipo == 'PRODUCTO'])}">
+                                                <td colspan="4" class="text-center text-success py-3">
+                                                    <i class="fa-solid fa-circle-check"></i> Stock estable
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
+
+            <footer th:replace="~{layout/layout :: footer}"></footer>
         </div>
-
-        <div class="row">
-            
-            
-
-            <div class="col-lg-6 mb-4">
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3 bg-white d-flex justify-content-between align-items-center">
-                        <h6 class="m-0 font-weight-bold text-danger">Egresos por Compras</h6>
-                        <span class="badge bg-danger">Total: S/ <span th:text="${#numbers.formatDecimal(totalCompras, 1, 2)}"></span></span>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-area" style="position: relative; height:250px;">
-                            <canvas id="chartCompras"></canvas> 
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-6 mb-4">
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3 bg-white d-flex justify-content-between align-items-center">
-                        <h6 class="m-0 font-weight-bold text-primary">Ingresos por Ventas</h6>
-                        <span class="badge bg-success">Total: S/ <span th:text="${#numbers.formatDecimal(totalVentas, 1, 2)}"></span></span>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-area" style="position: relative; height:250px;">
-                            <canvas id="chartVentas"></canvas> 
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="row">
-            <div class="col-lg-6 mb-4">
-                <div class="card shadow h-100">
-                    <div class="card-header py-3 bg-warning text-dark">
-                        <h6 class="m-0 font-weight-bold"><i class="fa-solid fa-triangle-exclamation"></i> Alerta: Residuos (Materia Prima)</h6>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-striped mb-0 table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Material</th>
-                                        <th>Categoría</th>
-                                        <th class="text-end">Stock</th>
-                                        <th class="text-center">Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="prod : ${alertasStock}" th:if="${prod.tipo == 'RESIDUO'}">
-                                        <td th:text="${prod.nombre}">Papel</td>
-                                        <td th:text="${prod.categoria.nombre}">Cat</td>
-                                        <td class="text-end fw-bold text-danger" th:text="${prod.stock} + ' ' + ${prod.unidad}">5 kg</td>
-                                        <td class="text-center"><span class="badge bg-warning text-dark">Bajo</span></td>
-                                    </tr>
-                                    <tr th:if="${#lists.isEmpty(alertasStock.?[tipo == 'RESIDUO'])}">
-                                        <td colspan="4" class="text-center text-success py-3">
-                                            <i class="fa-solid fa-check-circle"></i> ¡Todo el inventario está saludable!
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-6 mb-4">
-                <div class="card shadow h-100">
-                    <div class="card-header py-3 bg-danger text-white">
-                        <h6 class="m-0 font-weight-bold"><i class="fa-solid fa-box-open"></i> Alerta: Productos Terminados</h6>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-striped mb-0 table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Producto</th>
-                                        <th>Categoría</th>
-                                        <th class="text-end">Stock</th>
-                                        <th class="text-center">Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr th:each="prod : ${alertasStock}" th:if="${prod.tipo == 'PRODUCTO'}">
-                                        <td th:text="${prod.nombre}">Papel</td>
-                                        <td th:text="${prod.categoria.nombre}">Cat</td>
-                                        <td class="text-end fw-bold text-danger" th:text="${prod.stock} + ' ' + ${prod.unidad}">5 kg</td>
-                                        <td class="text-center"><span class="badge bg-danger">Crítico</span></td>
-                                    </tr>
-                                    <tr th:if="${#lists.isEmpty(alertasStock.?[tipo == 'PRODUCTO'])}">
-                                        <td colspan="4" class="text-center text-success py-3">
-                                            <i class="fa-solid fa-check-circle"></i> Stock estable
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
-
-    <footer th:replace="~{layout/layout :: footer}"></footer>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script th:inline="javascript">
-        
-        var labelsV = /*[[${graficoLabels}]]*/ [];
-        var dataV = /*[[${graficoData}]]*/ [];
+        // Set new default font family and font color to mimic Bootstrap's default styling
+        Chart.defaults.font.family = 'Inter';
+        Chart.defaults.color = '#858796';
 
-        const ctxV = document.getElementById('chartVentas').getContext('2d');
-        new Chart(ctxV, {
+        var labels = /*[[${graficoLabels}]]*/[];
+        var dataVentas = /*[[${graficoDataVentas}]]*/[];
+        var dataCompras = /*[[${graficoDataCompras}]]*/[];
+
+        const ctx = document.getElementById('chartBalance').getContext('2d');
+        new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: labelsV,
-                datasets: [{
-                    label: 'Ventas (S/)',
-                    data: dataV,
-                    backgroundColor: 'rgba(78, 115, 223, 0.7)', // Azul
-                    borderColor: 'rgba(78, 115, 223, 1)',
-                    borderWidth: 1
-                }]
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Ingresos (Ventas)',
+                        data: dataVentas,
+                        backgroundColor: '#1cc88a', // Green
+                        hoverBackgroundColor: '#17a673',
+                        borderColor: '#1cc88a',
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Egresos (Compras)',
+                        data: dataCompras,
+                        backgroundColor: '#e74a3b', // Red
+                        hoverBackgroundColor: '#c0392b',
+                        borderColor: '#e74a3b',
+                        borderRadius: 4
+                    }
+                ]
             },
             options: {
-                responsive: true,
                 maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true } }
+                layout: { padding: { left: 10, right: 25, top: 25, bottom: 0 } },
+                scales: {
+                    x: {
+                        grid: { display: false, drawBorder: false },
+                        ticks: { maxTicksLimit: 12 }
+                    },
+                    y: {
+                        ticks: {
+                            maxTicksLimit: 5,
+                            padding: 10,
+                            callback: function (value) { return 'S/ ' + value; }
+                        },
+                        grid: {
+                            color: "rgb(234, 236, 244)",
+                            drawBorder: false,
+                            borderDash: [2],
+                            zeroLineBorderDash: [2]
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: "rgb(255,255,255)",
+                        bodyColor: "#858796",
+                        titleMarginBottom: 10,
+                        titleColor: '#6e707e',
+                        titleFont: { size: 14 },
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: true,
+                        intersect: false,
+                        mode: 'index',
+                        caretPadding: 10,
+                        callbacks: {
+                            label: function (context) {
+                                var label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += 'S/ ' + context.parsed.y.toFixed(2);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
             }
         });
 
-        
-        var labelsC = /*[[${graficoComprasLabels}]]*/ [];
-        var dataC = /*[[${graficoComprasData}]]*/ [];
+        // Gráfico de Pastel (Inventario)
+        var cantProductos = /*[[${cantProductos}]]*/ 0;
+        var cantResiduos = /*[[${cantResiduos}]]*/ 0;
 
-        const ctxC = document.getElementById('chartCompras').getContext('2d');
-        new Chart(ctxC, {
-            type: 'bar',
+        const ctxPie = document.getElementById('chartMateriales').getContext('2d');
+        new Chart(ctxPie, {
+            type: 'doughnut',
             data: {
-                labels: labelsC,
+                labels: ['Productos Terminados', 'Residuos (Materia Prima)'],
                 datasets: [{
-                    label: 'Compras (S/)',
-                    data: dataC,
-                    backgroundColor: 'rgba(231, 74, 59, 0.7)',
-                    borderColor: 'rgba(231, 74, 59, 1)',     // Rojo fuerte línea
-                    borderWidth: 1
-                }]
+                    data: [cantProductos, cantResiduos],
+                    backgroundColor: ['#1cc88a', '#e74a3b'], // Green (Productos), Red (Residuos)
+                    hoverBackgroundColor: ['#17a673', '#be2617'],
+                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                }],
             },
             options: {
-                responsive: true,
                 maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true } }
-            }
+                tooltips: {
+                    backgroundColor: "rgb(255,255,255)",
+                    bodyFontColor: "#858796",
+                    borderColor: '#dddfeb',
+                    borderWidth: 1,
+                    xPadding: 15,
+                    yPadding: 15,
+                    displayColors: false,
+                    caretPadding: 10,
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'right',
+                        labels: {
+                            usePointStyle: true,
+                            boxWidth: 10
+                        }
+                    }
+                },
+                cutout: '70%',
+            },
         });
-        /*]]>*/
     </script>
 
 </body>
+
 </html>

@@ -1,70 +1,84 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="~{layout/layout :: head}"></head>
+
 <body>
 
-    <header th:replace="~{layout/layout :: navbar}"></header>
+    <div class="d-flex" id="wrapper">
+        <div th:replace="~{layout/layout :: sidebar}"></div>
 
-    <div class="container mt-4">
-        
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 style="color: #6f42c1;"><i class="fa-solid fa-users-gear"></i> Gestión de Trabajadores</h2>
-            
-            <button class="btn text-white" 
-                    style="background-color: #6f42c1; border-color: #6f42c1;"
-                    onclick="abrirModal('/web/trabajadores/registrar', 'Nuevo Trabajador')">
-                <i class="fa-solid fa-user-plus"></i> Nuevo Trabajador
-            </button>
-        </div>
+        <div id="page-content-wrapper">
+            <nav th:replace="~{layout/layout :: topbar}"></nav>
 
-        <div class="text-end mb-3">
-            <a th:href="@{/web/reportes/trabajadores}" class="btn btn-danger btn-lg">
-                <i class="fa-solid fa-file-pdf"></i> Descargar lista
-            </a>
-        </div>
+            <div class="container-fluid px-4">
 
-        <div class="card shadow-sm border-0">
-            <div class="card-body p-0">
-                <table class="table table-striped table-hover mb-0">
-                    <thead style="--bs-table-bg: #6f42c1; --bs-table-color: white; color: white;">
-                        <tr>
-                            <th>ID</th>
-                            <th>Nombre Completo</th>
-                            <th>DNI</th>
-                            <th>Teléfono</th> <th>Usuario</th>
-                            <th>Rol</th>
-                            <th class="text-center">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="t : ${trabajadores}">
-                            <td th:text="${t.id}">1</td>
-                            <td th:text="${t.nombre} + ' ' + ${t.apellidos}">Juan Perez</td>
-                            <td th:text="${t.dni}">12345678</td>
-                            <td th:text="${t.telefono}">999999999</td>
-                            <td th:text="${t.username}">juanp</td>
-                            <td>
-                                <span class="badge" 
-                                      th:classappend="${t.rol.nombre == 'ADMIN'} ? 'bg-danger' : 'bg-info'"
-                                      th:text="${t.rol.nombre}">ADMIN</span>
-                            </td>
-                            <td class="text-center">
-                                <button class="btn btn-warning btn-sm text-white" 
-                                        th:onclick="'abrirModal(\'/web/trabajadores/editar/' + ${t.id} + '\', \'Editar Trabajador\')'">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                
-                                <a th:href="@{/web/trabajadores/eliminar/{id}(id=${t.id})}" 
-                                   class="btn btn-danger btn-sm" 
-                                   onclick="return confirm('¿Eliminar este trabajador?')"
-                                   title="Eliminar">
-                                    <i class="fa-solid fa-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="text-primary"><i class="fa-solid fa-users-gear"></i> Gestión de Trabajadores</h2>
+
+                    <button class="btn btn-primary"
+                        onclick="abrirModal('/web/trabajadores/registrar', 'Nuevo Trabajador')">
+                        <i class="fa-solid fa-user-plus"></i> Nuevo Trabajador
+                    </button>
+                </div>
+
+                <div class="text-end mb-3">
+                    <a th:href="@{/web/reportes/usuarios}" class="btn btn-danger btn-sm">
+                        <i class="fa-solid fa-file-pdf"></i> Descargar lista
+                    </a>
+                </div>
+
+                <div class="card shadow mb-4 border-left-primary">
+                    <div class="card-header py-3 bg-white">
+                        <h6 class="m-0 font-weight-bold text-primary">Listado de Personal</h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre Completo</th>
+                                        <th>DNI</th>
+                                        <th>Teléfono</th>
+                                        <th>Usuario</th>
+                                        <th>Rol</th>
+                                        <th class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="t : ${trabajadores}">
+                                        <td th:text="${t.id}"></td>
+                                        <td th:text="${t.nombre} + ' ' + ${t.apellidos}"></td>
+                                        <td th:text="${t.dni}"></td>
+                                        <td th:text="${t.telefono}"></td>
+                                        <td th:text="${t.username}"></td>
+                                        <td>
+                                            <span class="badge"
+                                                th:classappend="${t.rol.nombre == 'ADMIN'} ? 'bg-danger' : 'bg-info'"
+                                                th:text="${t.rol.nombre}"></span>
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-warning btn-sm text-white"
+                                                th:onclick="'abrirModal(\'/web/trabajadores/editar/' + ${t.id} + '\', \'Editar Trabajador\')'">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </button>
+
+                                            <a th:href="@{/web/trabajadores/eliminar/{id}(id=${t.id})}"
+                                                class="btn btn-danger btn-sm"
+                                                onclick="return confirm('¿Eliminar este trabajador?')" title="Eliminar">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <footer th:replace="~{layout/layout :: footer}"></footer>
         </div>
     </div>
 
@@ -73,25 +87,24 @@
             <div class="modal-content">
                 <div class="modal-header text-white" style="background-color: #6f42c1;">
                     <h5 class="modal-title" id="tituloModal">Título</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div id="contenedorFormulario"></div>
             </div>
         </div>
     </div>
 
-    <footer th:replace="~{layout/layout :: footer}"></footer>
-
     <script>
         function abrirModal(url, titulo) {
             $('#tituloModal').text(titulo);
-            $.get(url, function(data) {
+            $.get(url, function (data) {
                 $('#contenedorFormulario').html(data);
                 var myModal = new bootstrap.Modal(document.getElementById('modalGenerico'));
                 myModal.show();
             });
         }
     </script>
-
 </body>
+
 </html>

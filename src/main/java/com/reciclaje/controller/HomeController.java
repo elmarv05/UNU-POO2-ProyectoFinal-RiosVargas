@@ -21,40 +21,47 @@ import jakarta.servlet.http.HttpSession;
 public class HomeController {
 
     // INYECCIÓN DE SERVICIOS (Respetando arquitectura por capas)
-    @Autowired private TrabajadorService trabajadorService;
-    @Autowired private ClienteService clienteService;
-    @Autowired private ProveedorService proveedorService;
-    @Autowired private MaterialService materialService;
-    @Autowired private VentaService ventaService;
-    @Autowired private CompraService compraService;
+    @Autowired
+    private TrabajadorService trabajadorService;
+    @Autowired
+    private ClienteService clienteService;
+    @Autowired
+    private ProveedorService proveedorService;
+    @Autowired
+    private MaterialService materialService;
+    @Autowired
+    private VentaService ventaService;
+    @Autowired
+    private CompraService compraService;
 
     @GetMapping("/")
     public String index() {
-        return "redirect:/login"; 
+        return "redirect:/login";
     }
 
     @GetMapping("/login")
     public String login() {
-        return "login"; 
+        return "login";
     }
 
     @PostMapping("/login")
-    public String procesarLogin(@RequestParam String username, @RequestParam String password, HttpSession session, Model model) {
+    public String procesarLogin(@RequestParam String username, @RequestParam String password, HttpSession session,
+            Model model) {
         Trabajador t = trabajadorService.validarCredenciales(username, password);
 
         if (t != null) {
             session.setAttribute("usuarioLogueado", t);
-            return "redirect:/web/home"; 
+            return "redirect:/web/home";
         } else {
             model.addAttribute("error", "Credenciales incorrectas");
             return "login";
         }
     }
-    
+
     // --- DASHBOARD ---
     @GetMapping("/web/home")
     public String home(HttpSession session, Model model) {
-    	if (session.getAttribute("usuarioLogueado") == null) {
+        if (session.getAttribute("usuarioLogueado") == null) {
             return "redirect:/login";
         }
 
@@ -67,35 +74,62 @@ public class HomeController {
         Double totalCompras = compraService.obtenerTotalCompras();
         model.addAttribute("totalVentas", totalVentas != null ? totalVentas : 0.0);
         model.addAttribute("totalCompras", totalCompras != null ? totalCompras : 0.0);
-        
+
         model.addAttribute("alertasStock", materialService.buscarStockBajo(10.0));
 
-        // 2. GRÁFICO DE VENTAS (Existente)
+        // 2. DATOS UNIFICADOS PARA EL GRÁFICO (Ingresos vs Egresos)
         List<IVentasPorMes> datosVentas = ventaService.obtenerReporteMensual();
-        List<String> labelsVentas = new ArrayList<>();
-        List<Double> dataVentas = new ArrayList<>();
-        if(datosVentas != null) {
-            for(IVentasPorMes v : datosVentas) {
-                labelsVentas.add(v.getMes() + "/" + v.getAnio());
-                dataVentas.add(v.getTotal());
-            }
-        }
-        model.addAttribute("graficoLabels", labelsVentas);
-        model.addAttribute("graficoData", dataVentas);
-
-        // 3. GRÁFICO DE COMPRAS (¡NUEVO!)
         List<IComprasPorMes> datosCompras = compraService.obtenerReporteMensual();
-        List<String> labelsCompras = new ArrayList<>();
-        List<Double> dataCompras = new ArrayList<>();
-        
-        if(datosCompras != null) {
-            for(IComprasPorMes c : datosCompras) {
-                labelsCompras.add(c.getMes() + "/" + c.getAnio());
-                dataCompras.add(c.getTotal());
+
+        // Usamos un Map para alinear los datos por fecha (Mes/Año)
+        // Clave: "Anio-Mes" (para ordenar), Valor: [Ventas, Compras]
+        java.util.TreeMap<String, Double[]> balanceMap = new java.util.TreeMap<>();
+
+        // Poblar Ventas
+        if (datosVentas != null) {
+            for (IVentasPorMes v : datosVentas) {
+                // Formateamos la clave para que sea ordenable lexicográficamente: "YYYY-MM"
+                // Asumiendo que getMes() devuelve 1-12. Rellenamos con 0 a la izquierda.
+                String key = String.format("%04d-%02d", v.getAnio(), v.getMes());
+                balanceMap.putIfAbsent(key, new Double[] { 0.0, 0.0 });
+                balanceMap.get(key)[0] = v.getTotal();
             }
         }
-        model.addAttribute("graficoComprasLabels", labelsCompras);
-        model.addAttribute("graficoComprasData", dataCompras);
+
+        // Poblar Compras
+        if (datosCompras != null) {
+            for (IComprasPorMes c : datosCompras) {
+                String key = String.format("%04d-%02d", c.getAnio(), c.getMes());
+                balanceMap.putIfAbsent(key, new Double[] { 0.0, 0.0 });
+                balanceMap.get(key)[1] = c.getTotal();
+            }
+        }
+
+        // Separar en listas alineadas para el frontend
+        List<String> labels = new ArrayList<>();
+        List<Double> dataVentasList = new ArrayList<>();
+        List<Double> dataComprasList = new ArrayList<>();
+
+        for (java.util.Map.Entry<String, Double[]> entry : balanceMap.entrySet()) {
+            // Convertir clave "YYYY-MM" a etiqueta amigable "MM/YYYY" para la vista
+            String[] parts = entry.getKey().split("-");
+            String mes = parts[1]; // ya viene con 0 si es necesario, o podemos parsear integer
+            String anio = parts[0];
+            // Quitar 0 delante si se prefiere formato "1/2024"
+            try {
+                int mesInt = Integer.parseInt(mes);
+                labels.add(mesInt + "/" + anio);
+            } catch (NumberFormatException e) {
+                labels.add(entry.getKey());
+            }
+
+            dataVentasList.add(entry.getValue()[0]);
+            dataComprasList.add(entry.getValue()[1]);
+        }
+
+        model.addAttribute("graficoLabels", labels);
+        model.addAttribute("graficoDataVentas", dataVentasList);
+        model.addAttribute("graficoDataCompras", dataComprasList);
 
         return "home";
     }

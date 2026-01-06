@@ -25,7 +25,6 @@ public class ReporteController {
     @Autowired private VentaService ventaService;
     @Autowired private TransformacionService transformacionService;
     @Autowired private TrabajadorService trabajadorService;
-    @Autowired private CategoriaService categoriaService;
 
     // --- MATERIALES (Ya los tenías, actualizados al método genérico) ---
     

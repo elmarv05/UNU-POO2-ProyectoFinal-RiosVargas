@@ -1,76 +1,89 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head th:replace="~{layout/layout :: head}"></head>
+
 <body>
 
-    <header th:replace="~{layout/layout :: navbar}"></header>
+    <div class="d-flex" id="wrapper">
+        <div th:replace="~{layout/layout :: sidebar}"></div>
 
-    <div class="container mt-4">
-        
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2><i class="fa-solid fa-tags"></i> Categorías de Materiales</h2>
-            <button class="btn text-white" 
-                    style="background-color: #6f42c1; border-color: #6f42c1;"
-                    onclick="abrirModal('/web/categorias/nueva', 'Nueva Categoría')">
-                <i class="fa-solid fa-plus"></i> Nueva Categoría
-            </button>
-        </div>
+        <div id="page-content-wrapper">
+            <nav th:replace="~{layout/layout :: topbar}"></nav>
+
+            <div class="container-fluid px-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="text-primary"><i class="fa-solid fa-tags"></i> Categorías de Materiales</h2>
+                    <button class="btn btn-primary" onclick="abrirModal('/web/categorias/nueva', 'Nueva Categoría')">
+                        <i class="fa-solid fa-plus"></i> Nueva Categoría
+                    </button>
+                </div>
 
 
-        <div class="card shadow-sm">
-            <div class="card-body p-0">
-                <table class="table table-striped table-hover mb-0">
-                    <thead style="--bs-table-bg: #6f42c1; --bs-table-color: white; color: white;">
-                        <tr>
-                            <th style="width: 10%;">ID</th>
-                            <th style="width: 30%;">Nombre</th>
-                            <th>Descripción</th>
-                            <th class="text-center" style="width: 15%;">Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="cat : ${categorias}">
-                            <td th:text="${cat.id}">1</td>
-                            <td>
-                                <span class="fw-bold" th:text="${cat.nombre}">Plástico</span>
-                            </td>
-                            <td th:text="${cat.descripcion}">Descripción...</td>
-                            <td class="text-center">
-                                <button class="btn btn-warning btn-sm me-1"
-                                        th:onclick="'abrirModal(\'/web/categorias/' + ${cat.id} + '/editar\', \'Editar Categoría\')'">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                </button>
-                                
-                                <a th:href="@{/web/categorias/{id}/eliminar(id=${cat.id})}" 
-                                   class="btn btn-danger btn-sm"
-                                   onclick="return confirm('¿Borrar esta categoría?');">
-                                    <i class="fa-solid fa-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="card shadow mb-4 border-left-primary">
+                    <div class="card-header py-3 bg-white">
+                        <h6 class="m-0 font-weight-bold text-primary">Listado de Categorías</h6>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="width: 10%;">ID</th>
+                                        <th style="width: 30%;">Nombre</th>
+                                        <th>Descripción</th>
+                                        <th class="text-center" style="width: 15%;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="cat : ${categorias}">
+                                        <td th:text="${cat.id}"></td>
+                                        <td>
+                                            <span class="fw-bold" th:text="${cat.nombre}"></span>
+                                        </td>
+                                        <td th:text="${cat.descripcion}"></td>
+                                        <td class="text-center">
+                                            <button class="btn btn-warning btn-sm me-1"
+                                                th:onclick="'abrirModal(\'/web/categorias/' + ${cat.id} + '/editar\', \'Editar Categoría\')'">
+                                                <i class="fa-solid fa-pen-to-square"></i>
+                                            </button>
+
+                                            <a th:href="@{/web/categorias/{id}/eliminar(id=${cat.id})}"
+                                                class="btn btn-danger btn-sm"
+                                                onclick="return confirm('¿Borrar esta categoría?');">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <footer th:replace="~{layout/layout :: footer}"></footer>
         </div>
     </div>
 
     <div class="modal fade" id="modalGenerico" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header text-white" style="background-color: #6f42c1;"> <h5 class="modal-title" id="tituloModal">Título</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header text-white" style="background-color: #6f42c1;">
+                    <h5 class="modal-title" id="tituloModal">Título</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div id="contenedorFormulario"></div>
             </div>
         </div>
     </div>
 
-    <footer th:replace="~{layout/layout :: footer}"></footer>
-
     <script>
         function abrirModal(url, titulo) {
             $('#tituloModal').text(titulo);
-            $.get(url, function(data) {
+            $.get(url, function (data) {
                 $('#contenedorFormulario').html(data);
                 var myModal = new bootstrap.Modal(document.getElementById('modalGenerico'));
                 myModal.show();
@@ -79,4 +92,5 @@
     </script>
 
 </body>
+
 </html>
