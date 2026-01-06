@@ -12,12 +12,12 @@ public class MaterialService {
     @Autowired
     private MaterialRepository materialRepository;
 
-    // Método para obtener todo mezclado (por si acaso)
+   
     public List<Material> listarTodos() {
         return materialRepository.findAll();
     }
     
-    // Método NUEVO: Para obtener listas separadas
+    
     public List<Material> listarPorTipo(String tipo) {
         return materialRepository.findByTipo(tipo);
     }
