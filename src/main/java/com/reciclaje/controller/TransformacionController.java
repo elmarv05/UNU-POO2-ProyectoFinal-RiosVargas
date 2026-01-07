@@ -1,5 +1,7 @@
 package com.reciclaje.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,8 +28,17 @@ public class TransformacionController {
 
     // 1. LISTAR HISTORIAL
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("transformaciones", transformacionService.listarTodas());
+    public String listar(@RequestParam(required = false) Integer trabajadorId, Model model) {
+        List<Transformacion> lista;
+        if (trabajadorId != null) {
+            lista = transformacionService.listarPorTrabajador(trabajadorId);
+            model.addAttribute("trabajadorSeleccionado", trabajadorId);
+        } else {
+            lista = transformacionService.listarTodas();
+        }
+
+        model.addAttribute("transformaciones", lista);
+        model.addAttribute("trabajadores", trabajadorService.listarTodos());
         return "transformaciones/listaTransformaciones";
     }
 
@@ -41,10 +52,13 @@ public class TransformacionController {
 
     // 3. GUARDAR (PROCESAR)
     @PostMapping("/guardar")
-    public String guardar(@ModelAttribute Transformacion transformacion, Model model) {
+    public String guardar(@ModelAttribute Transformacion transformacion, Model model,
+            jakarta.servlet.http.HttpSession session) {
         try {
-            // Asignar trabajador (Temporal: Hardcodeamos al Admin ID 1)
-            Trabajador t = trabajadorService.buscarPorId(1);
+            Trabajador t = (Trabajador) session.getAttribute("usuarioLogueado");
+            if (t == null) {
+                return "redirect:/login";
+            }
             transformacion.setTrabajador(t);
 
             transformacionService.registrarTransformacion(transformacion);
@@ -71,8 +85,9 @@ public class TransformacionController {
     }
 
     private void cargarListas(Model model) {
-        // Necesitamos la lista de ORIGEN (Residuos) y DESTINO (Productos)
-        model.addAttribute("residuos", materialService.listarPorTipo("RESIDUO"));
-        model.addAttribute("productos", materialService.listarPorTipo("PRODUCTO"));
+        // Necesitamos la lista de ORIGEN (Residuos) y DESTINO (Productos) pero solo los
+        // ACTIVOS
+        model.addAttribute("residuos", materialService.listarActivosPorTipo("RESIDUO"));
+        model.addAttribute("productos", materialService.listarActivosPorTipo("PRODUCTO"));
     }
 }

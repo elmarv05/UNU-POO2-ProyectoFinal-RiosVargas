@@ -21,7 +21,8 @@
                         <h2 class="text-primary"><i class="fa-solid fa-boxes-stacked"></i> Gestión de Inventario</h2>
                     </div>
                     <div class="col-md-6 text-end">
-                        <button class="btn btn-primary" onclick="abrirModal('/web/materiales/nuevo', 'Nuevo Material')">
+                        <button class="btn btn-primary"
+                            th:onclick="'abrirModal(\'' + @{/web/materiales/nuevo} + '\', \'Nuevo Material\')'">
                             <i class="fa-solid fa-plus"></i> Nuevo Material
                         </button>
                     </div>
@@ -32,7 +33,32 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
 
-                <div class="text-end mb-3">
+                <div class="d-flex justify-content-between mb-3">
+                    <!-- Filtros -->
+                    <form method="get" th:action="@{/web/materiales}" class="d-flex align-items-center gap-3">
+
+                        <!-- Filtro Categoría -->
+                        <div class="d-flex align-items-center">
+                            <label for="categoriaId" class="me-2 fw-bold text-gray-700 text-nowrap">Categoría:</label>
+                            <select id="categoriaId" name="categoriaId" class="form-select form-select-sm"
+                                onchange="this.form.submit()" style="max-width: 200px;">
+                                <option value="" th:selected="${categoriaSeleccionada == null}">-- Todas --</option>
+                                <option th:each="c : ${categorias}" th:value="${c.id}" th:text="${c.nombre}"
+                                    th:selected="${categoriaSeleccionada != null and categoriaSeleccionada == c.id}">
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Filtro Activos/Inactivos -->
+                        <div class="form-check form-switch pt-1">
+                            <input class="form-check-input" type="checkbox" role="switch" id="filtrarInactivos"
+                                name="mostrarTodos" value="true" onchange="this.form.submit()"
+                                th:checked="${mostrarTodos}">
+                            <label class="form-check-label text-gray-800" for="filtrarInactivos">Mostrar
+                                Inactivos</label>
+                        </div>
+                    </form>
+
                     <a th:href="@{/web/reportes/residuos}" class="btn btn-danger btn-sm">
                         <i class="fa-solid fa-file-pdf"></i> Descargar lista
                     </a>
@@ -51,32 +77,39 @@
                                         <th>ID</th>
                                         <th>Nombre</th>
                                         <th>Categoría</th>
+                                        <th>Estado</th>
                                         <th class="text-end">Stock Actual</th>
                                         <th class="text-end">Precio Compra</th>
                                         <th class="text-center">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="m : ${residuos}" th:if="${m.tipo == 'RESIDUO'}">
+                                    <tr th:each="m : ${residuos}" th:if="${m.tipo == 'RESIDUO'}"
+                                        th:classappend="${!m.activo} ? 'table-secondary' : ''">
                                         <td th:text="${m.id}"></td>
                                         <td th:text="${m.nombre}" class="fw-bold"></td>
                                         <td th:text="${m.categoria.nombre}"></td>
+                                        <td>
+                                            <span th:if="${m.activo}" class="badge bg-success">Activo</span>
+                                            <span th:unless="${m.activo}" class="badge bg-danger">Inactivo</span>
+                                        </td>
                                         <td class="text-end">
                                             <span th:text="${m.stock}" class="fw-bold"></span>
                                             <small class="text-muted" th:text="${m.unidad}"></small>
                                         </td>
                                         <td class="text-end text-danger">
-                                            - S/ <span th:text="${m.precioCompra}"></span>
+                                            - S/ <span th:text="${m.precio}"></span>
                                         </td>
                                         <td class="text-center">
                                             <div class="btn-group" role="group">
                                                 <button class="btn btn-warning btn-sm"
-                                                    th:onclick="'abrirModal(\'/web/materiales/editar/' + ${m.id} + '\', \'Editar Residuo\')'">
+                                                    th:onclick="'abrirModal(\'' + @{/web/materiales/editar/{id}(id=${m.id}, categoriaId=${categoriaSeleccionada}, mostrarTodos=${mostrarTodos})} + '\', \'Editar Residuo\')'">
                                                     <i class="fa-solid fa-pen"></i>
                                                 </button>
-                                                <a th:href="@{/web/materiales/eliminar/{id}(id=${m.id})}"
+                                                <a th:href="@{/web/materiales/eliminar/{id}(id=${m.id}, categoriaId=${categoriaSeleccionada}, mostrarTodos=${mostrarTodos})}"
                                                     class="btn btn-danger btn-sm"
-                                                    onclick="return confirm('¿Eliminar residuo?')">
+                                                    onclick="return confirm('¿Desactivar residuo?')"
+                                                    th:if="${m.activo}">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </a>
                                             </div>
@@ -110,45 +143,47 @@
                                         <th>ID</th>
                                         <th>Nombre</th>
                                         <th>Categoría</th>
+                                        <th>Estado</th>
                                         <th class="text-end">Stock Actual</th>
                                         <th class="text-end">Precio Venta</th>
-                                        <th class="text-center">Factor Conv.</th>
                                         <th class="text-center">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="m : ${productos}" th:if="${m.tipo == 'PRODUCTO'}">
+                                    <tr th:each="m : ${productos}" th:if="${m.tipo == 'PRODUCTO'}"
+                                        th:classappend="${!m.activo} ? 'table-secondary' : ''">
                                         <td th:text="${m.id}"></td>
                                         <td th:text="${m.nombre}" class="fw-bold"></td>
                                         <td th:text="${m.categoria.nombre}"></td>
+                                        <td>
+                                            <span th:if="${m.activo}" class="badge bg-success">Activo</span>
+                                            <span th:unless="${m.activo}" class="badge bg-danger">Inactivo</span>
+                                        </td>
                                         <td class="text-end">
                                             <span th:text="${m.stock}" class="fw-bold"></span>
                                             <small class="text-muted" th:text="${m.unidad}"></small>
                                         </td>
+
                                         <td class="text-end text-success">
-                                            + S/ <span th:text="${m.precioVenta}"></span>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="badge bg-info text-dark">
-                                                x<span th:text="${m.factorConversion}"></span>
-                                            </span>
+                                            + S/ <span th:text="${m.precio}"></span>
                                         </td>
                                         <td class="text-center">
                                             <div class="btn-group" role="group">
                                                 <button class="btn btn-warning btn-sm"
-                                                    th:onclick="'abrirModal(\'/web/materiales/editar/' + ${m.id} + '\', \'Editar Producto\')'">
+                                                    th:onclick="'abrirModal(\'' + @{/web/materiales/editar/{id}(id=${m.id}, categoriaId=${categoriaSeleccionada}, mostrarTodos=${mostrarTodos})} + '\', \'Editar Producto\')'">
                                                     <i class="fa-solid fa-pen"></i>
                                                 </button>
-                                                <a th:href="@{/web/materiales/eliminar/{id}(id=${m.id})}"
+                                                <a th:href="@{/web/materiales/eliminar/{id}(id=${m.id}, categoriaId=${categoriaSeleccionada}, mostrarTodos=${mostrarTodos})}"
                                                     class="btn btn-danger btn-sm"
-                                                    onclick="return confirm('¿Eliminar producto?')">
+                                                    onclick="return confirm('¿Desactivar producto?')"
+                                                    th:if="${m.activo}">
                                                     <i class="fa-solid fa-trash"></i>
                                                 </a>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr th:if="${#lists.isEmpty(productos)}">
-                                        <td colspan="7" class="text-center">No hay datos</td>
+                                        <td colspan="6" class="text-center">No hay datos</td>
                                     </tr>
                                 </tbody>
                             </table>

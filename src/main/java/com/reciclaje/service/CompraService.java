@@ -27,32 +27,34 @@ public class CompraService {
         return compraRepository.findAllByOrderByFechaDesc();
     }
 
+    public List<Compra> listarPorTrabajador(Integer trabajadorId) {
+        return compraRepository.findByTrabajadorIdOrderByFechaDesc(trabajadorId);
+    }
+
     public Compra buscarPorId(Integer id) {
         return compraRepository.findById(id).orElse(null);
     }
 
-    
- // En CompraService
+    // En CompraService
 
     public Double obtenerTotalCompras() {
         return compraRepository.sumarComprasTotales();
     }
-    
+
     // @Transactional es como begin - end
     @Transactional
     public Compra guardarCompra(Compra compra) {
-                
+
         if (compra.getFecha() == null) {
             compra.setFecha(LocalDateTime.now());
         }
-        
+
         if (compra.getCodigo() == null) {
             compra.setCodigo("CP-" + System.currentTimeMillis());
         }
 
-       
         for (DetalleCompra detalle : compra.getDetalles()) {
-            
+
             Material material = materialRepository.findById(detalle.getMaterial().getId())
                     .orElseThrow(() -> new RuntimeException("Material no encontrado"));
 
@@ -63,9 +65,9 @@ public class CompraService {
         }
         return compraRepository.save(compra);
     }
-    
+
     public List<IComprasPorMes> obtenerReporteMensual() {
         return compraRepository.obtenerComprasPorMes();
     }
-    
+
 }

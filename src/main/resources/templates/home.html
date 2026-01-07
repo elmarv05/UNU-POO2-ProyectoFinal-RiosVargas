@@ -18,14 +18,15 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h1 class="h3 mb-0 text-gray-800">Dashboard General</h1>
-                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                    <a href="#" onclick="window.print(); return false;"
+                        class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
                         <i class="fa-solid fa-download fa-sm text-white-50"></i> Generar Reporte
                     </a>
                 </div>
 
-                <!-- Stats & Pie Chart Row -->
+                <!-- Row 1: KPI Cards -->
                 <div class="row">
-                    <!-- Clientes (Cyan/Info) -->
+                    <!-- Clientes -->
                     <div class="col-xl-3 col-md-6 mb-4">
                         <div class="card border-left-info shadow h-100 py-2">
                             <div class="card-body">
@@ -44,7 +45,7 @@
                         </div>
                     </div>
 
-                    <!-- Proveedores (Yellow/Warning) -->
+                    <!-- Proveedores -->
                     <div class="col-xl-3 col-md-6 mb-4">
                         <div class="card border-left-warning shadow h-100 py-2">
                             <div class="card-body">
@@ -63,53 +64,91 @@
                         </div>
                     </div>
 
-                    <!-- Gráfico de Inventario (Pastel) -->
-                    <div class="col-xl-6 col-md-12 mb-4">
-                        <div class="card shadow h-100">
-                            <div
-                                class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-white border-bottom-0">
-                                <h6 class="m-0 font-weight-bold text-gray-800">Distribución de Inventario</h6>
-                            </div>
+                    <!-- Productos Totales -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-success shadow h-100 py-2">
                             <div class="card-body">
-                                <div class="chart-pie pt-4 pb-2" style="height: 200px; position: relative;">
-                                    <canvas id="chartMateriales"></canvas>
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Productos
+                                            Terminados</div>
+                                        <div class="h3 mb-0 font-weight-bold text-gray-800" th:text="${cantProductos}">0
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fa-solid fa-box-open fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Residuos Totales -->
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Materia
+                                            Prima (Residuos)</div>
+                                        <div class="h3 mb-0 font-weight-bold text-gray-800" th:text="${cantResiduos}">0
+                                        </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fa-solid fa-recycle fa-2x text-gray-300"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Chart Row -->
+                <!-- Row 2: Charts -->
                 <div class="row">
-                    <div class="col-xl-12 col-lg-12 mb-4">
-                        <div class="card shadow mb-4 border-left-primary">
+                    <!-- Balance Chart (Wider) -->
+                    <div class="col-xl-8 col-lg-7">
+                        <div class="card shadow mb-4">
                             <div
                                 class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-white">
-                                <h6 class="m-0 font-weight-bold text-primary">Balance Financiero (Ingresos vs Egresos)
+                                <h6 class="m-0 font-weight-bold text-gray-800">Balance Financiero (Ingresos vs Egresos)
                                 </h6>
                             </div>
                             <div class="card-body">
-                                <div class="chart-area" style="position: relative; height:400px;">
+                                <div class="chart-area" style="position: relative; height: 320px;">
                                     <canvas id="chartBalance"></canvas>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Inventory Horizontal Bar Chart -->
+                    <div class="col-xl-4 col-lg-5">
+                        <div class="card shadow mb-4">
+                            <div
+                                class="card-header py-3 d-flex flex-row align-items-center justify-content-between bg-white">
+                                <h6 class="m-0 font-weight-bold text-gray-800">Stock por Categoría (Est. en KG)</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-pie pt-4 pb-2" style="position: relative; height: 320px;">
+                                    <canvas id="chartStockCategorias"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Alerts Row -->
+                <!-- Row 3: Alerts Tables -->
                 <div class="row">
-                    <!-- Residuos Warning (Red/Danger) -->
+                    <!-- Alerta Residuos -->
                     <div class="col-lg-6 mb-4">
                         <div class="card shadow mb-4 border-left-danger">
-                            <!-- Header styled to match listaMateriales (Residuos) -->
                             <div class="card-header py-3 bg-white border-bottom-0">
-                                <h6 class="m-0 font-weight-bold text-danger"><i class="fa-solid fa-recycle"></i>
-                                    Alerta: Residuos (Materia Prima)</h6>
+                                <h6 class="m-0 font-weight-bold text-danger"><i class="fa-solid fa-recycle"></i> Alerta:
+                                    Residuos (Stock Bajo)</h6>
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
-                                    <table class="table table-striped mb-0 text-center">
+                                    <table class="table table-striped mb-0 text-center table-sm">
                                         <thead class="bg-light">
                                             <tr>
                                                 <th>Material</th>
@@ -138,18 +177,16 @@
                         </div>
                     </div>
 
-                    <!-- Productos Critical (Green/Success) -->
+                    <!-- Alerta Productos -->
                     <div class="col-lg-6 mb-4">
                         <div class="card shadow mb-4 border-left-success">
-                            <!-- Header styled to match listaMateriales (Productos) -->
                             <div class="card-header py-3 bg-white border-bottom-0">
                                 <h6 class="m-0 font-weight-bold text-success"><i class="fa-solid fa-box-open"></i>
-                                    Alerta: Productos
-                                    Terminados</h6>
+                                    Alerta: Productos (Stock Bajo)</h6>
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
-                                    <table class="table table-striped mb-0 text-center">
+                                    <table class="table table-striped mb-0 text-center table-sm">
                                         <thead class="bg-light">
                                             <tr>
                                                 <th>Producto</th>
@@ -184,6 +221,41 @@
             <footer th:replace="~{layout/layout :: footer}"></footer>
         </div>
     </div>
+
+    <style>
+        @media print {
+
+            /* Ocultar sidebar y topbar */
+            #sidebar-wrapper,
+            .navbar,
+            nav,
+            footer,
+            .btn {
+                display: none !important;
+            }
+
+            /* Ajustar el contenedor principal para que ocupe todo el ancho */
+            #wrapper {
+                display: block !important;
+            }
+
+            #page-content-wrapper {
+                margin-left: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+
+            /* Asegurar que los gráficos se vean bien */
+            .card {
+                border: 1px solid #ddd !important;
+                box-shadow: none !important;
+            }
+
+            body {
+                background-color: white !important;
+            }
+        }
+    </style>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -282,45 +354,52 @@
             }
         });
 
-        // Gráfico de Pastel (Inventario)
-        var cantProductos = /*[[${cantProductos}]]*/ 0;
-        var cantResiduos = /*[[${cantResiduos}]]*/ 0;
+        // Gráfico Horizontal: Stock por Categoría
+        var catLabels = /*[[${inventoryLabels}]]*/[];
+        var catData = /*[[${inventoryData}]]*/[];
 
-        const ctxPie = document.getElementById('chartMateriales').getContext('2d');
-        new Chart(ctxPie, {
-            type: 'doughnut',
+        // Paleta de colores vibrante
+        const bgColors = [
+            '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
+            '#6610f2', '#fd7e14', '#20c9a6', '#e83e8c', '#6f42c1'
+        ];
+
+        const ctxCat = document.getElementById('chartStockCategorias').getContext('2d');
+        new Chart(ctxCat, {
+            type: 'bar',
             data: {
-                labels: ['Productos Terminados', 'Residuos (Materia Prima)'],
+                labels: catLabels,
                 datasets: [{
-                    data: [cantProductos, cantResiduos],
-                    backgroundColor: ['#1cc88a', '#e74a3b'], // Green (Productos), Red (Residuos)
-                    hoverBackgroundColor: ['#17a673', '#be2617'],
-                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                    label: 'Volumen Estimado (KG)',
+                    data: catData,
+                    backgroundColor: bgColors,
+                    borderRadius: 4,
+                    barPercentage: 0.6,
                 }],
             },
             options: {
+                indexAxis: 'y', // Hace que sea horizontal
                 maintainAspectRatio: false,
-                tooltips: {
-                    backgroundColor: "rgb(255,255,255)",
-                    bodyFontColor: "#858796",
-                    borderColor: '#dddfeb',
-                    borderWidth: 1,
-                    xPadding: 15,
-                    yPadding: 15,
-                    displayColors: false,
-                    caretPadding: 10,
-                },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'right',
-                        labels: {
-                            usePointStyle: true,
-                            boxWidth: 10
-                        }
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { callback: function (value) { return value + ' kg'; } }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { font: { weight: 'bold' } }
                     }
                 },
-                cutout: '70%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return context.parsed.x.toLocaleString() + ' KG (Est.)';
+                            }
+                        }
+                    }
+                }
             },
         });
     </script>

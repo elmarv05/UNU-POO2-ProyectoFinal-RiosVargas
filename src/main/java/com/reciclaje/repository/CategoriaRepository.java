@@ -6,6 +6,8 @@ import com.reciclaje.model.Categoria;
 
 @Repository
 public interface CategoriaRepository extends JpaRepository<Categoria, Integer> {
-    
+
     Categoria findByNombre(String nombre);
+
+    java.util.List<Categoria> findByActivoTrue();
 }

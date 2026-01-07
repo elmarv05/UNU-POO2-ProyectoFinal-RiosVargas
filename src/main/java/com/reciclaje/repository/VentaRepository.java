@@ -12,6 +12,8 @@ public interface VentaRepository extends JpaRepository<Venta, Integer> {
     // Para mostrar el historial ordenado por la más reciente
     List<Venta> findAllByOrderByFechaDesc();
 
+    List<Venta> findByTrabajadorIdOrderByFechaDesc(Integer trabajadorId);
+
     @Query(value = "CALL sp_sumar_ventas_totales()", nativeQuery = true)
     Double sumarVentasTotales();
 

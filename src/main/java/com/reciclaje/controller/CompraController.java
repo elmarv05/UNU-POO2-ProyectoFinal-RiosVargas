@@ -21,7 +21,7 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/web/compras")
-@SessionAttributes("compra") 
+@SessionAttributes("compra")
 public class CompraController {
 
     @Autowired
@@ -34,9 +34,19 @@ public class CompraController {
     private TrabajadorService trabajadorService;
 
     @GetMapping
-    public String listar(Model model, SessionStatus status) {
-        status.setComplete(); 
-        model.addAttribute("compras", compraService.listarCompras());
+    public String listar(@RequestParam(required = false) Integer trabajadorId, Model model, SessionStatus status) {
+        status.setComplete();
+
+        List<Compra> lista;
+        if (trabajadorId != null) {
+            lista = compraService.listarPorTrabajador(trabajadorId);
+            model.addAttribute("trabajadorSeleccionado", trabajadorId);
+        } else {
+            lista = compraService.listarCompras();
+        }
+
+        model.addAttribute("compras", lista);
+        model.addAttribute("trabajadores", trabajadorService.listarTodos());
         return "compras/listaCompras";
     }
 
@@ -44,22 +54,22 @@ public class CompraController {
     public String nueva(Model model) {
         Compra compra = new Compra();
         compra.setTotal(0.0);
-        compra.setDetalles(new ArrayList<>()); 
-        
+        compra.setDetalles(new ArrayList<>());
+
         model.addAttribute("compra", compra);
-        cargarListas(model); 
+        cargarListas(model);
         return "compras/formularioCompra";
     }
 
- // En CompraController.java
+    // En CompraController.java
 
     @PostMapping("/agregar-item")
-    public String agregarItem(@ModelAttribute Compra compra, 
-                              @RequestParam(required = false) Integer materialId, 
-                              @RequestParam(required = false) Double cantidad, 
-                              @RequestParam(required = false) Double precio, 
-                              Model model) {
-        
+    public String agregarItem(@ModelAttribute Compra compra,
+            @RequestParam(required = false) Integer materialId,
+            @RequestParam(required = false) Double cantidad,
+            @RequestParam(required = false) Double precio,
+            Model model) {
+
         // 1. Validación de seguridad
         if (materialId == null || cantidad == null || precio == null) {
             model.addAttribute("error", "Error: Seleccione un material, cantidad y precio validos.");
@@ -69,7 +79,8 @@ public class CompraController {
 
         // 2. Lógica de Fusión (Merge)
         boolean existe = false;
-        if (compra.getDetalles() == null) compra.setDetalles(new ArrayList<>());
+        if (compra.getDetalles() == null)
+            compra.setDetalles(new ArrayList<>());
 
         for (DetalleCompra det : compra.getDetalles()) {
             if (det.getMaterial().getId().equals(materialId)) {
@@ -89,42 +100,45 @@ public class CompraController {
             detalle.setSubtotal(cantidad * precio);
             compra.agregarDetalle(detalle);
         }
-     
+
         double sumaTotal = compra.getDetalles().stream().mapToDouble(DetalleCompra::getSubtotal).sum();
         compra.setTotal(sumaTotal);
-        
+
         cargarListas(model);
         return "compras/formularioCompra";
     }
-    
+
     @GetMapping("/eliminar-item/{index}")
     public String eliminarItem(@ModelAttribute Compra compra, @PathVariable int index, Model model) {
         if (index >= 0 && index < compra.getDetalles().size()) {
             compra.getDetalles().remove(index); // Quitamos de la lista
-                      
+
             double sumaTotal = compra.getDetalles().stream().mapToDouble(DetalleCompra::getSubtotal).sum();
             compra.setTotal(sumaTotal);
         }
         cargarListas(model);
         return "compras/formularioCompra";
     }
-    
+
     @PostMapping("/guardar")
-    public String guardar(@ModelAttribute Compra compra, HttpSession session, SessionStatus status) {        
-        Trabajador t = trabajadorService.buscarPorId(1); // Asumimos Admin por ahora
+    public String guardar(@ModelAttribute Compra compra, HttpSession session, SessionStatus status) {
+        Trabajador t = (Trabajador) session.getAttribute("usuarioLogueado");
+        if (t == null) {
+            return "redirect:/login";
+        }
         compra.setTrabajador(t);
-      
+
         compraService.guardarCompra(compra);
-              
+
         status.setComplete();
         return "redirect:/web/compras";
     }
-    
+
     private void cargarListas(Model model) {
-        model.addAttribute("proveedores", proveedorService.listarTodos());      
-        model.addAttribute("materiales", materialService.listarPorTipo("RESIDUO"));
+        model.addAttribute("proveedores", proveedorService.listarActivos());
+        model.addAttribute("materiales", materialService.listarActivosPorTipo("RESIDUO"));
     }
-    
+
     @GetMapping("/ver/{id}")
     public String verDetalle(@PathVariable Integer id, Model model) {
         Compra compra = compraService.buscarPorId(id);

@@ -25,6 +25,10 @@ public class TransformacionService {
         return transformacionRepository.findAllByOrderByFechaDesc();
     }
 
+    public List<Transformacion> listarPorTrabajador(Integer trabajadorId) {
+        return transformacionRepository.findByTrabajadorIdOrderByFechaDesc(trabajadorId);
+    }
+
     public Transformacion buscarPorId(Integer id) {
         return transformacionRepository.findById(id).orElse(null);
     }
@@ -38,7 +42,7 @@ public class TransformacionService {
      */
     @Transactional
     public void registrarTransformacion(Transformacion t) {
-        
+
         // 1. Buscar entidades
         Material origen = materialRepository.findById(t.getMaterialOrigen().getId())
                 .orElseThrow(() -> new RuntimeException("Material origen no encontrado"));
@@ -48,20 +52,20 @@ public class TransformacionService {
         // 2. REGLA DE NEGOCIO: Recalcular la cantidad origen para seguridad
         // Si el destino tiene un factor de conversión definido (ej. 10.0), lo usamos.
         // Si es null o 0, asumimos 1.0
-        Double factor = (destino.getFactorConversion() != null && destino.getFactorConversion() > 0) 
-                      ? destino.getFactorConversion() 
-                      : 1.0;
-        
+        Double factor = (destino.getFactorConversion() != null && destino.getFactorConversion() > 0)
+                ? destino.getFactorConversion()
+                : 1.0;
+
         // Calculamos cuánto debería ser el consumo real
         Double calc = t.getCantidadDestino() * factor;
-        
+
         // Opcional: Forzar el valor calculado (sobrescribir lo que envió el form)
         t.setCantidadOrigen(calc);
 
         // 3. Validar Stock
         if (origen.getStock() < t.getCantidadOrigen()) {
-            throw new RuntimeException("Stock insuficiente. Se requieren " + t.getCantidadOrigen() + 
-                                       " " + origen.getUnidad() + " pero solo hay " + origen.getStock());
+            throw new RuntimeException("Stock insuficiente. Se requieren " + t.getCantidadOrigen() +
+                    " " + origen.getUnidad() + " pero solo hay " + origen.getStock());
         }
 
         // 4. Actualizar stocks
@@ -72,9 +76,11 @@ public class TransformacionService {
         materialRepository.save(destino);
 
         // 5. Guardar
-        if (t.getFecha() == null) t.setFecha(LocalDateTime.now());
-        if (t.getCodigo() == null) t.setCodigo("TR-" + System.currentTimeMillis());
-        
+        if (t.getFecha() == null)
+            t.setFecha(LocalDateTime.now());
+        if (t.getCodigo() == null)
+            t.setCodigo("TR-" + System.currentTimeMillis());
+
         transformacionRepository.save(t);
     }
 }

@@ -37,14 +37,14 @@
                 <i class="fa-solid fa-house"></i> Inicio
             </a>
 
-            <!-- Operaciones Section -->
+            <!-- Gestion Section (Clientes, Ventas) -->
             <div
                 th:if="${session.usuarioLogueado.rol.nombre == 'ADMIN' or session.usuarioLogueado.rol.nombre == 'GESTOR'}">
-                <a class="sidebar-group-header" data-bs-toggle="collapse" href="#collapseOperaciones" role="button"
-                    aria-expanded="true" aria-controls="collapseOperaciones">
-                    OPERACIONES <i class="fa-solid fa-chevron-down"></i>
+                <a class="sidebar-group-header" data-bs-toggle="collapse" href="#collapseGestion" role="button"
+                    aria-expanded="true" aria-controls="collapseGestion">
+                    GESTIÓN <i class="fa-solid fa-chevron-down"></i>
                 </a>
-                <div class="collapse show" id="collapseOperaciones">
+                <div class="collapse show" id="collapseGestion">
                     <a th:href="@{/web/clientes}" class="sidebar-item list-group-item-action">
                         <i class="fa-solid fa-users"></i> Clientes
                     </a>
@@ -54,36 +54,44 @@
                 </div>
             </div>
 
-            <!-- Logistica Section -->
-            <div>
+            <!-- Operacion Section (Proveedores, Compras) -->
+            <div
+                th:if="${session.usuarioLogueado.rol.nombre == 'ADMIN' or session.usuarioLogueado.rol.nombre == 'GESTOR' or session.usuarioLogueado.rol.nombre == 'OPERARIO'}">
+                <a class="sidebar-group-header" data-bs-toggle="collapse" href="#collapseOperacion" role="button"
+                    aria-expanded="true" aria-controls="collapseOperacion">
+                    OPERACIÓN <i class="fa-solid fa-chevron-down"></i>
+                </a>
+                <div class="collapse show" id="collapseOperacion">
+                    <a th:href="@{/web/proveedores}" class="sidebar-item list-group-item-action">
+                        <i class="fa-solid fa-truck-field"></i> Proveedores
+                    </a>
+                    <a th:href="@{/web/compras}" class="sidebar-item list-group-item-action">
+                        <i class="fa-solid fa-cart-arrow-down"></i> Compras
+                    </a>
+                </div>
+            </div>
+
+            <!-- Logistica Section (Materiales, Transformacion) -->
+            <div
+                th:if="${session.usuarioLogueado.rol.nombre == 'ADMIN' or session.usuarioLogueado.rol.nombre == 'GESTOR' or session.usuarioLogueado.rol.nombre == 'OPERARIO'}">
                 <a class="sidebar-group-header" data-bs-toggle="collapse" href="#collapseLogistica" role="button"
                     aria-expanded="true" aria-controls="collapseLogistica">
                     LOGÍSTICA <i class="fa-solid fa-chevron-down"></i>
                 </a>
                 <div class="collapse show" id="collapseLogistica">
                     <th:block
-                        th:if="${session.usuarioLogueado.rol.nombre == 'ADMIN' or session.usuarioLogueado.rol.nombre == 'OPERARIO'}">
-                        <a th:href="@{/web/proveedores}" class="sidebar-item list-group-item-action">
-                            <i class="fa-solid fa-truck-field"></i> Proveedores
-                        </a>
-                        <a th:href="@{/web/compras}" class="sidebar-item list-group-item-action">
-                            <i class="fa-solid fa-cart-arrow-down"></i> Compras
-                        </a>
-                        <a th:href="@{/web/transformaciones}" class="sidebar-item list-group-item-action">
-                            <i class="fa-solid fa-gears"></i> Transformación
-                        </a>
-                    </th:block>
-
-                    <th:block
                         th:if="${session.usuarioLogueado.rol.nombre == 'ADMIN' or session.usuarioLogueado.rol.nombre == 'GESTOR'}">
                         <a th:href="@{/web/materiales}" class="sidebar-item list-group-item-action">
                             <i class="fa-solid fa-boxes-stacked"></i> Materiales
                         </a>
                     </th:block>
+                    <a th:href="@{/web/transformaciones}" class="sidebar-item list-group-item-action">
+                        <i class="fa-solid fa-gears"></i> Transformación
+                    </a>
                 </div>
             </div>
 
-            <!-- Administracion Section -->
+            <!-- Administracion Section (Categorias, Usuarios) -->
             <div th:if="${session.usuarioLogueado.rol.nombre == 'ADMIN'}">
                 <a class="sidebar-group-header" data-bs-toggle="collapse" href="#collapseAdmin" role="button"
                     aria-expanded="true" aria-controls="collapseAdmin">
@@ -94,7 +102,7 @@
                         <i class="fa-solid fa-tags"></i> Categorías
                     </a>
                     <a th:href="@{/web/trabajadores}" class="sidebar-item list-group-item-action">
-                        <i class="fa-solid fa-id-card"></i> Trabajadores
+                        <i class="fa-solid fa-users-gear"></i> Trabajadores
                     </a>
                 </div>
             </div>
@@ -141,12 +149,8 @@
     <footer th:fragment="footer" class="py-4 bg-light mt-auto">
         <div class="container-fluid px-4">
             <div class="d-flex align-items-center justify-content-between small">
-                <div class="text-muted">Copyright &copy; Recicladora Carlitos 2024</div>
-                <div>
-                    <a href="#">Privacy Policy</a>
-                    &middot;
-                    <a href="#">Terms &amp; Conditions</a>
-                </div>
+                <div class="text-muted">Copyright &copy; Recicladora Carlitos 2026</div>
+
             </div>
         </div>
         <!-- Scripts -->
@@ -155,6 +159,9 @@
 
     <!-- Scripts Fragment -->
     <div th:fragment="scripts">
+        <!-- jQuery (Required for Modals) -->
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <!-- Bootstrap Bundle -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             window.addEventListener('DOMContentLoaded', event => {

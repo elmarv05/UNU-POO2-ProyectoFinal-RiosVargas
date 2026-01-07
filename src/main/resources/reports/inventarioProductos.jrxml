@@ -8,7 +8,7 @@
 	</queryString>
 	<field name="id" class="java.lang.Integer"/>
 	<field name="nombre" class="java.lang.String"/>
-	<field name="precioVenta" class="java.lang.Double"/>
+	<field name="precio" class="java.lang.Double"/>
 	<field name="stock" class="java.lang.Double"/>
 	<background>
 		<band splitType="Stretch"/>
@@ -131,7 +131,7 @@
 						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textFieldExpression><![CDATA[$F{precioVenta}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{precio}]]></textFieldExpression>
 				</textField>
 				<textField textAdjust="StretchHeight">
 					<reportElement x="400" y="0" width="80" height="30" uuid="92c824ef-fe68-41a0-8b01-8857c85a4aa7">

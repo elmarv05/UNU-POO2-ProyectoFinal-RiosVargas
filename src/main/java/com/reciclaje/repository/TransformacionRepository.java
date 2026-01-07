@@ -7,7 +7,9 @@ import com.reciclaje.model.Transformacion;
 
 @Repository
 public interface TransformacionRepository extends JpaRepository<Transformacion, Integer> {
-    
+
     // Historial ordenado por fecha descendente
     List<Transformacion> findAllByOrderByFechaDesc();
+
+    List<Transformacion> findByTrabajadorIdOrderByFechaDesc(Integer trabajadorId);
 }

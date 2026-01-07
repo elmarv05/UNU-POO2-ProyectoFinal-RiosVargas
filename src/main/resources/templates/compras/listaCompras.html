@@ -15,12 +15,25 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2 class="text-primary"><i class="fa-solid fa-cart-shopping"></i> Historial de Compras</h2>
-                    <button class="btn btn-primary" onclick="abrirModal('/web/compras/nueva', 'Nueva Compra')">
+                    <button class="btn btn-primary"
+                        th:onclick="'abrirModal(\'' + @{/web/compras/nueva} + '\', \'Nueva Compra\')'">
                         <i class="fa-solid fa-cash-register"></i> Registrar Compra
                     </button>
                 </div>
 
-                <div class="text-end mb-3">
+                <div class="d-flex justify-content-between mb-3 align-items-center">
+                    <!-- Filtro por Trabajador -->
+                    <form method="get" class="d-flex align-items-center" style="max-width: 400px;">
+                        <label for="trabajadorId" class="me-2 fw-bold text-gray-700 text-nowrap">Filtrar por:</label>
+                        <select id="trabajadorId" name="trabajadorId" class="form-select form-select-sm"
+                            onchange="this.form.submit()">
+                            <option value="" th:selected="${trabajadorSeleccionado == null}">-- Todos --</option>
+                            <option th:each="t : ${trabajadores}" th:value="${t.id}" th:text="${t.username}"
+                                th:selected="${trabajadorSeleccionado != null and trabajadorSeleccionado == t.id}">
+                            </option>
+                        </select>
+                    </form>
+
                     <a th:href="@{/web/reportes/compras}" class="btn btn-danger btn-sm">
                         <i class="fa-solid fa-file-pdf"></i> Descargar lista
                     </a>
@@ -53,7 +66,7 @@
                                             th:text="'S/ ' + ${#numbers.formatDecimal(c.total, 1, 2)}"></td>
                                         <td class="text-center">
                                             <button class="btn btn-info btn-sm text-white"
-                                                th:onclick="'abrirModal(\'/web/compras/ver/' + ${c.id} + '\', \'Detalle de Compra\')'"
+                                                th:onclick="'abrirModal(\'' + @{/web/compras/ver/} + ${c.id} + '\', \'Detalle de Compra\')'"
                                                 title="Ver Detalle">
                                                 <i class="fa-solid fa-eye"></i>
                                             </button>

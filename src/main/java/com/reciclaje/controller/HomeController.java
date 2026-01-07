@@ -131,6 +131,37 @@ public class HomeController {
         model.addAttribute("graficoDataVentas", dataVentasList);
         model.addAttribute("graficoDataCompras", dataComprasList);
 
+        // 3. DATOS PARA GRÁFICO DE INVENTARIO POR CATEGORÍA
+        List<com.reciclaje.model.Material> materiales = materialService.listarActivos();
+        java.util.Map<String, Double> stockPorCategoria = new java.util.HashMap<>();
+
+        for (com.reciclaje.model.Material m : materiales) {
+            if (m.getCategoria() != null && m.getStock() != null && m.getStock() > 0) {
+                String catNombre = m.getCategoria().getNombre();
+                Double stockEnKg = 0.0;
+
+                // Normalización de Unidades a KG
+                // 1 ton = 1000 kg
+                // 1 unidad = 600 kg
+                if ("TON".equalsIgnoreCase(m.getUnidad())) {
+                    stockEnKg = m.getStock() * 1000.0;
+                } else if ("UNIDAD".equalsIgnoreCase(m.getUnidad())) {
+                    stockEnKg = m.getStock() * 600.0;
+                } else {
+                    // Asumimos KG por defecto
+                    stockEnKg = m.getStock();
+                }
+
+                stockPorCategoria.put(catNombre, stockPorCategoria.getOrDefault(catNombre, 0.0) + stockEnKg);
+            }
+        }
+
+        List<String> inventoryLabels = new ArrayList<>(stockPorCategoria.keySet());
+        List<Double> inventoryData = new ArrayList<>(stockPorCategoria.values());
+
+        model.addAttribute("inventoryLabels", inventoryLabels);
+        model.addAttribute("inventoryData", inventoryData);
+
         return "home";
     }
 

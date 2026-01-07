@@ -15,10 +15,12 @@ public class Categoria {
     private Integer id;
 
     @Column(nullable = false, unique = true, length = 50)
-    private String nombre; 
+    private String nombre;
 
     @Column(length = 200)
     private String descripcion;
-    
-    
+
+    @Column(nullable = false)
+    private boolean activo = true;
+
 }

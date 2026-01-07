@@ -27,6 +27,10 @@ public class VentaService {
         return ventaRepository.findAllByOrderByFechaDesc();
     }
 
+    public List<Venta> listarPorTrabajador(Integer trabajadorId) {
+        return ventaRepository.findByTrabajadorIdOrderByFechaDesc(trabajadorId);
+    }
+
     public Venta buscarPorId(Integer id) {
         return ventaRepository.findById(id).orElse(null);
     }
@@ -39,27 +43,27 @@ public class VentaService {
      * 4. DESCUENTA el stock.
      * 5. Guarda todo.
      */
-    
- // En VentaService
 
- // Total histórico
- public Double obtenerTotalVentas() {
-     return ventaRepository.sumarVentasTotales();
- }
+    // En VentaService
 
- // Datos para el Gráfico
- public List<IVentasPorMes> obtenerReporteMensual() {
-     return ventaRepository.obtenerVentasPorMes();
- }
-    
+    // Total histórico
+    public Double obtenerTotalVentas() {
+        return ventaRepository.sumarVentasTotales();
+    }
+
+    // Datos para el Gráfico
+    public List<IVentasPorMes> obtenerReporteMensual() {
+        return ventaRepository.obtenerVentasPorMes();
+    }
+
     @Transactional
     public void guardarVenta(Venta venta) {
-        
+
         // 1. Datos automáticos
         if (venta.getFecha() == null) {
             venta.setFecha(LocalDateTime.now());
         }
-        
+
         // Generador simple de código (Mejorable en el futuro)
         if (venta.getCodigo() == null) {
             venta.setCodigo("VN-" + System.currentTimeMillis());
@@ -67,7 +71,7 @@ public class VentaService {
 
         // 2. Procesar cada detalle
         for (DetalleVenta detalle : venta.getDetalles()) {
-            
+
             // Buscamos el producto en la BD para asegurar datos frescos
             Material producto = materialRepository.findById(detalle.getMaterial().getId())
                     .orElseThrow(() -> new RuntimeException("Producto no encontrado"));

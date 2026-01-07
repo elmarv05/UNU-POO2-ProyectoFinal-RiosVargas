@@ -15,12 +15,25 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h2 class="text-primary"><i class="fa-solid fa-users"></i> Lista de Clientes</h2>
-                    <button class="btn btn-primary" onclick="abrirModal('/web/clientes/registrar', 'Nuevo Cliente')">
+                    <button class="btn btn-primary"
+                        th:onclick="'abrirModal(\'' + @{/web/clientes/registrar} + '\', \'Nuevo Cliente\')'">
                         <i class="fa-solid fa-user-plus"></i> Nuevo Cliente
                     </button>
                 </div>
 
-                <div class="text-end mb-3">
+                <div class="d-flex justify-content-between mb-3">
+                    <!-- Filtro de Activos/Inactivos -->
+                    <form method="get" th:action="@{/web/clientes}" class="d-flex align-items-center">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="filtrarInactivos"
+                                name="mostrarTodos" value="true" onchange="this.form.submit()"
+                                th:checked="${mostrarTodos}">
+                            <label class="form-check-label text-gray-800" for="filtrarInactivos">Mostrar
+                                Inactivos</label>
+                            <!-- Hidden input to handle unchecked state if needed, though Spring handles missing param as null/false -->
+                        </div>
+                    </form>
+
                     <a th:href="@{/web/reportes/clientes}" class="btn btn-danger btn-sm">
                         <i class="fa-solid fa-file-pdf"></i> Descargar lista
                     </a>
@@ -58,7 +71,7 @@
 
                                         <td class="text-center">
                                             <button class="btn btn-primary btn-sm"
-                                                th:onclick="'abrirModal(\'/web/clientes/editar/' + ${c.id} + '\', \'Editar Cliente\')'">
+                                                th:onclick="'abrirModal(\'' + @{/web/clientes/editar/} + ${c.id} + '\', \'Editar Cliente\')'">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </button>
 

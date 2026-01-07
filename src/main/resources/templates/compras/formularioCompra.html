@@ -1,13 +1,13 @@
 <form th:object="${compra}" method="post" id="formCompra">
-    
+
     <div class="modal-body">
-        
+
         <div th:if="${error}" class="alert alert-danger shadow-sm py-2">
             <i class="fa-solid fa-triangle-exclamation"></i> <span th:text="${error}">Error</span>
         </div>
 
         <div class="row g-3 mb-3">
-            
+
             <div class="col-lg-12">
                 <div class="card shadow-sm border-primary">
                     <div class="card-header bg-primary text-white py-2">
@@ -17,17 +17,17 @@
                         <div class="row g-2">
                             <div class="col-md-7">
                                 <label class="form-label small fw-bold text-primary">Proveedor</label>
-                                <select class="form-select form-select-sm border-primary" th:field="*{proveedor}" required>
+                                <select class="form-select form-select-sm border-primary" th:field="*{proveedor}"
+                                    required>
                                     <option value="">-- Seleccione --</option>
-                                    <option th:each="p : ${proveedores}" 
-                                            th:value="${p.id}" 
-                                            th:text="${p.razonSocial}">
+                                    <option th:each="p : ${proveedores}" th:value="${p.id}" th:text="${p.razonSocial}">
                                     </option>
                                 </select>
                             </div>
                             <div class="col-md-5">
                                 <label class="form-label small fw-bold text-primary">Observación</label>
-                                <input type="text" class="form-control form-control-sm border-primary" th:field="*{observaciones}" placeholder="...">
+                                <input type="text" class="form-control form-control-sm border-primary"
+                                    th:field="*{observaciones}" placeholder="...">
                             </div>
                         </div>
                     </div>
@@ -43,27 +43,27 @@
                         <div class="row g-2 align-items-end">
                             <div class="col-md-5">
                                 <label class="form-label small fw-bold text-info-emphasis">Material</label>
-                                <select class="form-select form-select-sm border-info" name="materialId" id="selectMaterial" onchange="actualizarPrecio()">
+                                <select class="form-select form-select-sm border-info" name="materialId"
+                                    id="selectMaterial" onchange="actualizarPrecio()">
                                     <option value="">-- Seleccionar --</option>
-                                    <option th:each="m : ${materiales}" 
-                                            th:value="${m.id}" 
-                                            th:text="${m.nombre}"
-                                            th:data-precio="${m.precioCompra}">
+                                    <option th:each="m : ${materiales}" th:value="${m.id}" th:text="${m.nombre}"
+                                        th:data-precio="${m.precio}">
                                     </option>
                                 </select>
                             </div>
                             <div class="col-md-2">
                                 <label class="form-label small fw-bold text-info-emphasis">Cant.</label>
-                                <input type="number" step="1" min="1" class="form-control form-control-sm border-info" name="cantidad" placeholder="0">
+                                <input type="number" step="1" min="1" class="form-control form-control-sm border-info"
+                                    name="cantidad" placeholder="0">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label small fw-bold text-info-emphasis">Costo Unit.</label>
-                                <input type="number" step="0.1" class="form-control form-control-sm border-info" name="precio" id="inputPrecio" readonly>
+                                <input type="number" step="0.1" class="form-control form-control-sm border-info"
+                                    name="precio" id="inputPrecio" readonly>
                             </div>
                             <div class="col-md-2 d-grid">
-                                <button type="button" 
-                                        data-url="/web/compras/agregar-item"
-                                        class="btn btn-info text-white btn-sm btn-ajax-action">
+                                <button type="button" data-url="/web/compras/agregar-item"
+                                    class="btn btn-info text-white btn-sm btn-ajax-action">
                                     <i class="fa-solid fa-plus"></i> Agregar
                                 </button>
                             </div>
@@ -76,7 +76,8 @@
         <div class="card shadow-sm border-secondary mb-2">
             <div class="card-header bg-secondary text-white py-2 d-flex justify-content-between align-items-center">
                 <h6 class="m-0"><i class="fa-solid fa-list"></i> Detalle</h6>
-                <span class="badge bg-white text-dark">Total: S/ <span th:text="${#numbers.formatDecimal(compra.total, 1, 2)}">0.00</span></span>
+                <span class="badge bg-white text-dark">Total: S/ <span
+                        th:text="${#numbers.formatDecimal(compra.total, 1, 2)}">0.00</span></span>
             </div>
             <div class="card-body p-0 table-responsive" style="max-height: 200px; overflow-y: auto;">
                 <table class="table table-sm table-striped mb-0 text-small">
@@ -96,9 +97,8 @@
                             <td th:text="${#numbers.formatDecimal(det.precio, 1, 2)}" class="text-end"></td>
                             <td th:text="${#numbers.formatDecimal(det.subtotal, 1, 2)}" class="text-end fw-bold"></td>
                             <td class="text-center">
-                                <a href="#" 
-                                   th:data-url="@{/web/compras/eliminar-item/{index}(index=${stat.index})}"
-                                   class="text-danger btn-ajax-action">
+                                <a href="#" th:data-url="@{/web/compras/eliminar-item/{index}(index=${stat.index})}"
+                                    class="text-danger btn-ajax-action">
                                     <i class="fa-solid fa-times-circle"></i>
                                 </a>
                             </td>
@@ -114,7 +114,8 @@
 
     <div class="modal-footer bg-light">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" th:formaction="@{/web/compras/guardar}" class="btn btn-primary" th:disabled="${#lists.isEmpty(compra.detalles)}">
+        <button type="submit" th:formaction="@{/web/compras/guardar}" class="btn btn-primary"
+            th:disabled="${#lists.isEmpty(compra.detalles)}">
             <i class="fa-solid fa-save"></i> Guardar Compra
         </button>
     </div>
@@ -130,15 +131,15 @@
     }
 
     // Lógica AJAX para no cerrar el modal al agregar/eliminar
-    $(document).ready(function() {
-        $('.btn-ajax-action').click(function(e) {
+    $(document).ready(function () {
+        $('.btn-ajax-action').click(function (e) {
             e.preventDefault();
             var url = $(this).attr('data-url') || $(this).attr('href');
             var formData = $('#formCompra').serialize();
-            
-            $.post(url, formData, function(response) {
+
+            $.post(url, formData, function (response) {
                 $('#contenedorFormulario').html(response);
-            }).fail(function() {
+            }).fail(function () {
                 alert("Error de conexión");
             });
         });

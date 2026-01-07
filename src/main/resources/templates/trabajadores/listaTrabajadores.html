@@ -17,12 +17,38 @@
                     <h2 class="text-primary"><i class="fa-solid fa-users-gear"></i> Gestión de Trabajadores</h2>
 
                     <button class="btn btn-primary"
-                        onclick="abrirModal('/web/trabajadores/registrar', 'Nuevo Trabajador')">
+                        th:onclick="'abrirModal(\'' + @{/web/trabajadores/registrar} + '\', \'Nuevo Trabajador\')'">
                         <i class="fa-solid fa-user-plus"></i> Nuevo Trabajador
                     </button>
                 </div>
 
-                <div class="text-end mb-3">
+
+
+                <div class="d-flex justify-content-between mb-3">
+                    <!-- Filtros -->
+                    <form method="get" th:action="@{/web/trabajadores}" class="d-flex align-items-center gap-3">
+
+                        <!-- Filtro Rol -->
+                        <div class="d-flex align-items-center">
+                            <label for="rolId" class="me-2 fw-bold text-gray-700 text-nowrap">Rol:</label>
+                            <select id="rolId" name="rolId" class="form-select form-select-sm"
+                                onchange="this.form.submit()" style="max-width: 200px;">
+                                <option value="" th:selected="${rolSeleccionado == null}">-- Todos --</option>
+                                <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.nombre}"
+                                    th:selected="${rolSeleccionado != null and rolSeleccionado == r.id}"></option>
+                            </select>
+                        </div>
+
+                        <!-- Filtro Activos/Inactivos -->
+                        <div class="form-check form-switch pt-1">
+                            <input class="form-check-input" type="checkbox" role="switch" id="filtrarInactivos"
+                                name="mostrarTodos" value="true" onchange="this.form.submit()"
+                                th:checked="${mostrarTodos}">
+                            <label class="form-check-label text-gray-800" for="filtrarInactivos">Mostrar
+                                Inactivos</label>
+                        </div>
+                    </form>
+
                     <a th:href="@{/web/reportes/usuarios}" class="btn btn-danger btn-sm">
                         <i class="fa-solid fa-file-pdf"></i> Descargar lista
                     </a>
@@ -43,11 +69,13 @@
                                         <th>Teléfono</th>
                                         <th>Usuario</th>
                                         <th>Rol</th>
+                                        <th>Estado</th>
                                         <th class="text-center">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr th:each="t : ${trabajadores}">
+                                    <tr th:each="t : ${trabajadores}"
+                                        th:classappend="${!t.activo} ? 'table-secondary' : ''">
                                         <td th:text="${t.id}"></td>
                                         <td th:text="${t.nombre} + ' ' + ${t.apellidos}"></td>
                                         <td th:text="${t.dni}"></td>
@@ -58,13 +86,18 @@
                                                 th:classappend="${t.rol.nombre == 'ADMIN'} ? 'bg-danger' : 'bg-info'"
                                                 th:text="${t.rol.nombre}"></span>
                                         </td>
+                                        <td>
+                                            <span th:if="${t.activo}" class="badge bg-success">Activo</span>
+                                            <span th:unless="${t.activo}" class="badge bg-secondary">Inactivo</span>
+                                        </td>
                                         <td class="text-center">
                                             <button class="btn btn-warning btn-sm text-white"
-                                                th:onclick="'abrirModal(\'/web/trabajadores/editar/' + ${t.id} + '\', \'Editar Trabajador\')'">
+                                                th:onclick="'abrirModal(\'' + @{/web/trabajadores/editar/{id}(id=${t.id}, rolId=${rolSeleccionado}, mostrarTodos=${mostrarTodos})} + '\', \'Editar Trabajador\')'">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </button>
 
-                                            <a th:href="@{/web/trabajadores/eliminar/{id}(id=${t.id})}"
+                                            <a th:if="${t.activo}"
+                                                th:href="@{/web/trabajadores/eliminar/{id}(id=${t.id}, rolId=${rolSeleccionado}, mostrarTodos=${mostrarTodos})}"
                                                 class="btn btn-danger btn-sm"
                                                 onclick="return confirm('¿Eliminar este trabajador?')" title="Eliminar">
                                                 <i class="fa-solid fa-trash"></i>
@@ -104,6 +137,8 @@
                 myModal.show();
             });
         }
+
+
     </script>
 </body>
 

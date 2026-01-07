@@ -17,6 +17,10 @@ public class ProveedorService {
         return proveedorRepository.findAll();
     }
 
+    public List<Proveedor> listarActivos() {
+        return proveedorRepository.findByActivoTrue();
+    }
+
     public void guardar(Proveedor proveedor) {
         proveedorRepository.save(proveedor);
     }

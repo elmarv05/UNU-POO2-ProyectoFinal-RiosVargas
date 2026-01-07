@@ -13,7 +13,7 @@ public class TrabajadorService {
 
     @Autowired
     private TrabajadorRepository trabajadorRepository;
-    
+
     @Autowired
     private RolRepository rolRepository;
 
@@ -21,7 +21,19 @@ public class TrabajadorService {
         return trabajadorRepository.findAll();
     }
 
-    public void guardar(Trabajador t) {        
+    public List<Trabajador> listarActivos() {
+        return trabajadorRepository.findByActivoTrue();
+    }
+
+    public List<Trabajador> listarPorRol(Integer rolId) {
+        return trabajadorRepository.findByRolId(rolId);
+    }
+
+    public List<Trabajador> listarActivosPorRol(Integer rolId) {
+        return trabajadorRepository.findByRolIdAndActivoTrue(rolId);
+    }
+
+    public void guardar(Trabajador t) {
         trabajadorRepository.save(t);
     }
 
@@ -29,7 +41,7 @@ public class TrabajadorService {
         return trabajadorRepository.findById(id).orElse(null);
     }
 
- // En TrabajadorService.java
+    // En TrabajadorService.java
     public void eliminar(Integer id) {
         Trabajador t = buscarPorId(id);
         if (t != null) {
@@ -37,18 +49,16 @@ public class TrabajadorService {
             trabajadorRepository.save(t);
         }
     }
-    
-   
+
     public Trabajador validarCredenciales(String nombre, String pass) {
         Trabajador t = trabajadorRepository.findByUsername(nombre);
-        
-        if (t!=null&&t.getPass().equals(pass)&&t.isActivo()) {
+
+        if (t != null && t.getPass().equals(pass) && t.isActivo()) {
             return t;
         }
-        return null; 
+        return null;
     }
-    
-    
+
     public List<Rol> listarRoles() {
         return rolRepository.findAll();
     }

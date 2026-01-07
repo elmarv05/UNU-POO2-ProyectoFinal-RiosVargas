@@ -1,20 +1,38 @@
 <form th:action="@{/web/materiales/guardar}" th:object="${material}" method="post">
-    
+
     <div class="modal-body">
-        
+
         <input type="hidden" th:field="*{id}">
         <input type="hidden" th:field="*{stock}">
 
+        <!-- Persistencia de Filtros -->
+        <input type="hidden" name="filtroCategoriaId" th:value="${filtroCategoriaId}">
+        <input type="hidden" name="filtroMostrarTodos" th:value="${filtroMostrarTodos}">
+
         <div class="alert alert-info py-2 mb-3 small">
-            <i class="fa-solid fa-info-circle"></i> Defina si es Materia Prima (lo que compra) o Producto (lo que vende).
+            <i class="fa-solid fa-info-circle"></i> Defina si es Materia Prima (lo que compra) o Producto (lo que
+            vende).
         </div>
 
         <div class="mb-3">
-            <label class="form-label fw-bold">Tipo de Registro</label>
-            <select class="form-select border-primary" th:field="*{tipo}" id="selectTipo" onchange="cambiarFormulario()" required>
-                <option value="RESIDUO">Materia Prima (Residuo)</option>
-                <option value="PRODUCTO">Producto Terminado</option>
-            </select>
+            <label class="form-label fw-bold d-block">Tipo de Registro</label>
+
+            <input type="hidden" th:if="${material.id != null}" th:name="tipo" th:value="*{tipo}">
+
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" th:field="*{tipo}" id="tipoResiduo" value="RESIDUO" checked
+                    onclick="cambiarFormulario()" th:disabled="${material.id != null}">
+                <label class="form-check-label" for="tipoResiduo">Materia Prima (Residuo)</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" th:field="*{tipo}" id="tipoProducto" value="PRODUCTO"
+                    onclick="cambiarFormulario()" th:disabled="${material.id != null}">
+                <label class="form-check-label" for="tipoProducto">Producto Terminado</label>
+            </div>
+
+            <div th:if="${material.id != null}" class="form-text text-muted small">
+                <i class="fa-solid fa-lock"></i> El tipo no se puede cambiar al editar.
+            </div>
         </div>
 
         <div class="row">
@@ -31,46 +49,46 @@
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label">Unidad de Medida</label>
-                <select class="form-select" th:field="*{unidad}">
+                <select class="form-select" th:field="*{unidad}" id="selectUnidad" onchange="actualizarSufijoUnidad()">
                     <option value="KG">Kilogramos (KG)</option>
                     <option value="UNIDAD">Unidades (PZA)</option>
                     <option value="TON">Toneladas (TON)</option>
                 </select>
+            </div>
+
+            <div class="col-md-12 mb-3 form-check form-switch ps-5" th:if="${material.id != null}">
+                <input class="form-check-input" type="checkbox" role="switch" id="switchActivo" th:field="*{activo}">
+                <label class="form-check-label" for="switchActivo">Habilitar Material (Activo)</label>
             </div>
         </div>
 
         <hr class="text-muted">
 
         <div class="row align-items-end">
-            
-            <div class="col-md-12 mb-3" id="divCompra">
-                <label class="form-label text-warning-emphasis fw-bold">Precio de Compra (Costo)</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-warning-subtle text-warning-emphasis">S/</span>
-                    <input type="number" step="0.01" class="form-control border-warning" th:field="*{precioCompra}" placeholder="0.00">
-                    <span class="input-group-text">/u</span>
-                </div>
-                <small class="text-muted" style="font-size: 0.75rem;">Monto que se paga al reciclador por este material.</small>
-            </div>
 
-            <div class="col-md-6 mb-3" id="divVenta" style="display:none;">
-                <label class="form-label text-success-emphasis fw-bold">Precio Venta</label>
+            <div class="col-md-12 mb-3" id="divPrecio">
+                <label class="form-label fw-bold" id="lblPrecio">Precio</label>
                 <div class="input-group">
-                    <span class="input-group-text bg-success-subtle text-success-emphasis">S/</span>
-                    <input type="number" step="0.1" class="form-control border-success" th:field="*{precioVenta}" placeholder="0.00">
+                    <span class="input-group-text" id="spanMoneda">S/</span>
+                    <input type="number" step="0.01" class="form-control" th:field="*{precio}" id="inputPrecio"
+                        placeholder="0.00">
+                    <span class="input-group-text" id="sufijoUnidadPrecio">/u</span>
                 </div>
+                <small class="text-muted" style="font-size: 0.75rem;" id="msgAyudaPrecio">Monto.</small>
             </div>
 
             <div class="col-md-6 mb-3" id="divFactor" style="display:none;">
                 <label class="form-label text-info-emphasis fw-bold">Factor Conversion*</label>
                 <div class="input-group">
                     <span class="input-group-text bg-info-subtle text-info-emphasis fw-bold">x</span>
-                    <input type="number" step="0.1" class="form-control border-info" th:field="*{factorConversion}" placeholder="1.0">
+                    <input type="number" step="0.1" class="form-control border-info" th:field="*{factorConversion}"
+                        placeholder="1.0">
                 </div>
             </div>
-            
+
             <div class="col-12" id="msgAyudaFactor" style="display:none;">
-                <small class="text-muted fst-italic" style="font-size: 0.75rem;">*Indica cuántos KG de residuo se requieren para crear 1 unidad de este producto.</small>
+                <small class="text-muted fst-italic" style="font-size: 0.75rem;">*Indica que cantidad de residuo se
+                    requieren para crear 1 unidad de este producto.</small>
             </div>
         </div>
 
@@ -85,29 +103,67 @@
 
     <script>
         function cambiarFormulario() {
-            let tipo = document.getElementById("selectTipo").value;
-            
-            let divCompra = document.getElementById("divCompra");
-            let divVenta = document.getElementById("divVenta");
+            let tipo = document.querySelector('input[name="tipo"]:checked').value;
+
+            let divPrecio = document.getElementById("divPrecio");
+            let lblPrecio = document.getElementById("lblPrecio");
+            let inputPrecio = document.getElementById("inputPrecio");
+            let spanMoneda = document.getElementById("spanMoneda");
+            let msgAyuda = document.getElementById("msgAyudaPrecio");
+
             let divFactor = document.getElementById("divFactor");
-            let msgAyuda = document.getElementById("msgAyudaFactor");
+            let msgAyudaFactor = document.getElementById("msgAyudaFactor");
+
+            // Reset classes
+            lblPrecio.className = "form-label fw-bold";
+            inputPrecio.className = "form-control";
+            spanMoneda.className = "input-group-text";
 
             if (tipo === "RESIDUO") {
-                divCompra.style.display = "block";
-                divVenta.style.display = "none";
-                divFactor.style.display = "none";
-                msgAyuda.style.display = "none";
-            } else {
-                divCompra.style.display = "none";
-                divVenta.style.display = "block";
-                divFactor.style.display = "block";
+                // Configuración Compra (Residuo) -> Color warning
+                divPrecio.className = "col-md-12 mb-3";
+                lblPrecio.textContent = "Precio de Compra (Costo)";
+                lblPrecio.classList.add("text-warning-emphasis");
+
+                inputPrecio.classList.add("border-warning");
+                spanMoneda.classList.add("bg-warning-subtle", "text-warning-emphasis");
+
+                msgAyuda.textContent = "Monto que se paga al reciclador por este material.";
                 msgAyuda.style.display = "block";
+
+                divFactor.style.display = "none";
+                msgAyudaFactor.style.display = "none";
+            } else {
+                // Configuración Venta (Producto) -> Color success
+                divPrecio.className = "col-md-6 mb-3";
+                lblPrecio.textContent = "Precio Venta";
+                lblPrecio.classList.add("text-success-emphasis");
+
+                inputPrecio.classList.add("border-success");
+                spanMoneda.classList.add("bg-success-subtle", "text-success-emphasis");
+
+                msgAyuda.style.display = "none";
+
+                divFactor.style.display = "block";
+                msgAyudaFactor.style.display = "block";
             }
         }
-        
-        // IMPORTANTE: Llamamos a la función inmediatamente para inicializar el estado
-        // (window.onload no funciona fiablemente dentro de fragmentos AJAX)
+
+        function actualizarSufijoUnidad() {
+            let unidad = document.getElementById("selectUnidad").value;
+            let texto = "/ " + unidad.toLowerCase();
+            if (unidad === 'UNIDAD') texto = "/ u";
+            if (unidad === 'KG') texto = "/ kg";
+            if (unidad === 'TON') texto = "/ ton";
+
+            // Actualizamos el único sufijo que existe ahora
+            let sufijo = document.getElementById("sufijoUnidadPrecio");
+            if (sufijo) sufijo.textContent = texto;
+        }
+
+        // Initialize
         cambiarFormulario();
+        actualizarSufijoUnidad();
     </script>
 
 </form>

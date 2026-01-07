@@ -15,10 +15,19 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
-    // 1. LISTAR (Solo activos por defecto o todos según prefieras, aquí mostramos todos para ver el estado)
+    // 1. LISTAR (Con filtro de activos/todos)
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("clientes", clienteService.listarTodos());
+    public String listar(@RequestParam(required = false) Boolean mostrarTodos, Model model) {
+        // Por defecto, mostrar solo activos (mostrarTodos = false)
+        boolean mostrar = (mostrarTodos != null) && mostrarTodos;
+
+        if (mostrar) {
+            model.addAttribute("clientes", clienteService.listarTodos());
+        } else {
+            model.addAttribute("clientes", clienteService.listarActivos());
+        }
+
+        model.addAttribute("mostrarTodos", mostrar);
         return "clientes/listaClientes";
     }
 
@@ -35,12 +44,12 @@ public class ClienteController {
     @GetMapping("/editar/{id}")
     public String editar(@PathVariable Integer id, Model model) {
         Cliente cliente = clienteService.buscarPorId(id);
-        
+
         // Validación: Si no existe, volvemos a la lista
         if (cliente == null) {
             return "redirect:/web/clientes";
         }
-        
+
         model.addAttribute("cliente", cliente);
         return "clientes/formularioClientes"; // Reutilizamos el mismo formulario
     }
@@ -49,7 +58,7 @@ public class ClienteController {
     @PostMapping("/guardar")
     public String guardar(@ModelAttribute Cliente cliente) {
         // Si es edición, el ID ya viene en el objeto cliente
-        clienteService.guardar(cliente); 
+        clienteService.guardar(cliente);
         return "redirect:/web/clientes";
     }
 

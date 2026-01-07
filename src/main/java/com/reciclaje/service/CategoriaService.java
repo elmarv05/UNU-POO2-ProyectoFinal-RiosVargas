@@ -16,6 +16,10 @@ public class CategoriaService {
         return categoriaRepository.findAll();
     }
 
+    public List<Categoria> listarActivas() {
+        return categoriaRepository.findByActivoTrue();
+    }
+
     public void guardar(Categoria categoria) {
         categoriaRepository.save(categoria);
     }
@@ -25,6 +29,10 @@ public class CategoriaService {
     }
 
     public void eliminar(Integer id) {
-        categoriaRepository.deleteById(id);
+        Categoria categoria = buscarPorId(id);
+        if (categoria != null) {
+            categoria.setActivo(false);
+            categoriaRepository.save(categoria);
+        }
     }
 }

@@ -18,8 +18,16 @@ public class CategoriaController {
     private CategoriaService categoriaService;
 
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("categorias", categoriaService.listarTodas());
+    public String listar(@RequestParam(required = false) Boolean mostrarTodos, Model model) {
+        boolean mostrar = (mostrarTodos != null) && mostrarTodos;
+
+        if (mostrar) {
+            model.addAttribute("categorias", categoriaService.listarTodas());
+        } else {
+            model.addAttribute("categorias", categoriaService.listarActivas());
+        }
+
+        model.addAttribute("mostrarTodos", mostrar);
         return "categorias/listaCategorias";
     }
 

@@ -1,8 +1,12 @@
 <form th:action="@{/web/trabajadores/guardar}" th:object="${trabajador}" method="post">
-    
+
     <div class="modal-body">
-        
+
         <input type="hidden" th:field="*{id}">
+
+        <!-- Persistencia de Filtros -->
+        <input type="hidden" name="filtroRolId" th:value="${filtroRolId}">
+        <input type="hidden" name="filtroMostrarTodos" th:value="${filtroMostrarTodos}">
 
         <h6 class="border-bottom pb-2 mb-3" style="color: #6f42c1;">
             <i class="fa-solid fa-id-card"></i> Datos Personales
@@ -42,14 +46,12 @@
                     <input type="text" class="form-control" th:field="*{username}" required>
                 </div>
             </div>
-            
+
             <div class="col-md-6 mb-3">
                 <label class="form-label fw-bold small text-muted">Rol</label>
                 <select class="form-select border-2" th:field="*{rol}" style="border-color: #6f42c1;" required>
                     <option value="">-- Seleccione --</option>
-                    <option th:each="r : ${roles}" 
-                            th:value="${r.id}" 
-                            th:text="${r.nombre}">
+                    <option th:each="r : ${roles}" th:value="${r.id}" th:text="${r.nombre}">
                     </option>
                 </select>
             </div>
@@ -67,13 +69,14 @@
         </div>
 
         <div class="mb-3 form-check form-switch p-3 bg-light border rounded" th:if="${trabajador.id != null}">
-            <input class="form-check-input ms-0 me-2" type="checkbox" role="switch" id="checkActivo" th:field="*{activo}">
+            <input class="form-check-input ms-0 me-2" type="checkbox" role="switch" id="checkActivo"
+                th:field="*{activo}">
             <label class="form-check-label" for="checkActivo">
                 <span class="badge bg-success" th:if="${trabajador.activo}">Personal Activo</span>
                 <span class="badge bg-secondary" th:unless="${trabajador.activo}">Personal Inactivo</span>
             </label>
         </div>
-        
+
         <input type="hidden" th:if="${trabajador.id == null}" name="activo" value="true">
 
     </div>
